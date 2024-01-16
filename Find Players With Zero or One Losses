@@ -1,0 +1,37 @@
+class Solution {
+    public List<List<Integer>> findWinners(int[][] matches) {
+        int losses[]=new int[100001]; //10^5
+
+        //now store the winner and lossers count in array
+        for(int i=0;i<matches.length;i++){
+            int winner=matches[i][0];
+            int loser=matches[i][1];
+            
+            if(losses[winner]==0){
+                losses[winner]=-1;
+            }
+            if(losses[loser] == -1){
+                losses[loser]=1;
+            }else {
+                losses[loser]++;
+            }
+        }
+        List<Integer>zeroloss=new ArrayList<>();//to store the index of the matches with zero loss
+        List<Integer>oneloss=new ArrayList<>();//to store the index of the matches with one loss
+
+        List<List<Integer>> ans=new ArrayList<>();//to store the final ans
+
+        for(int i=0;i<losses.length;i++){
+            if(losses[i]==-1){//if no loss found then add it to zero loss
+                zeroloss.add(i);
+            }else if(losses[i]==1){
+                oneloss.add(i);//else one loss 
+            }
+        }
+
+        ans.add(zeroloss); //add zeroloss
+        ans.add(oneloss); //add oneloss
+        
+        return ans;
+    }
+}
