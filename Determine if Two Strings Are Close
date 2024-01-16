@@ -1,0 +1,36 @@
+class Solution {
+    public boolean closeStrings(String word1, String word2) {
+        int m=word1.length();
+        int n=word2.length();
+
+        if(m!=n) return false;//both words should have same length
+        
+        int freq1[]=new int[26];//for storing freq of chars in word1
+        int freq2[]=new int[26];//for storing freq of chars in word2
+
+        // now store the frequencies of each char of word in array
+        for(int i=0;i<m;i++){
+            char ch1=word1.charAt(i); // getting the char at index of word1
+            char ch2=word2.charAt(i);// getting the char at index of word2
+
+            freq1[ch1 - 'a']++;//counting the freq with there index pos
+            freq2[ch2 - 'a']++; 
+        }
+
+        //1st. now check whether in both words characters are same or not
+        for(int i=0;i<26;i++){
+             if ((freq1[i] != 0 && freq2[i] != 0) || (freq1[i] == 0 && freq2[i] == 0))
+                continue;
+            
+            return false;
+        }
+
+        //2nd. now sort the freqs arrays to check whether the frequies of char in both words are same or not if same then only its possible to determine that strings are close
+        Arrays.sort(freq1);
+        Arrays.sort(freq2);
+
+        return Arrays.equals(freq1,freq2);
+
+
+    }
+}
