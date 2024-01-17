@@ -1,0 +1,24 @@
+class Solution {
+    public boolean uniqueOccurrences(int[] arr) {
+        Map<Integer, Integer> freq = new HashMap<>();
+        for (int x : arr) {
+            freq.put(x, freq.getOrDefault(x, 0) + 1);
+        }
+
+        Set<Integer> s = new HashSet<>();
+        for (int x : freq.values()) {
+            s.add(x);
+        }
+
+        return freq.size() == s.size();
+    }
+}
+
+
+/* Intuition
+Create an unordered map freq to store the frequency of each element in the array.
+Iterate through each element of the input array (arr).
+Update the frequency count in the freq map.
+Create an unordered set s to store unique frequencies.
+Iterate through the entries in the freq map and insert the frequencies into the set s.
+Check if the size of the freq map is equal to the size of the set s. If they are equal, it means that the occurrences of frequencies are unique.*/
