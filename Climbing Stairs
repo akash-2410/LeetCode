@@ -1,0 +1,55 @@
+...................................................................................Top-Down Dp......................................................................................................................
+
+The function solve is a recursive helper function for calculating the number of distinct ways to climb stairs.
+It uses memoization by storing intermediate results in the dp array to avoid redundant calculations.
+Base cases: If n is less than 0, the result is 0. If n is 0, there is one way to climb (doing nothing).
+The function recursively calculates the number of ways by summing the results of climbing (n-1) stairs and (n-2) stairs.
+
+class Solution {
+    public int climbStairs(int n) {
+        int []dp=new int[n+1];
+        Arrays.fill(dp,-1);
+        return solver(n,dp);
+    }
+    private int solver(int n,int[]dp){
+        if(n<0) return 0;
+        if(n == 0) return 1;
+
+        if(dp[n] != -1) return dp[n];
+
+        dp[n] = solver(n-1,dp) + solver(n-2,dp);
+
+        return dp[n];
+    }
+}
+
+
+
+......................................................................................Bottom Up Dp..................................................................................................................
+
+The solve function is a recursive function that calculates the number of distinct ways to climb stairs from step i to the top (n).
+Base cases: If i equals n, return 1 (reached the top). If i exceeds n, return 0 (invalid path).
+Memoization: Use a dp array to store already computed results to avoid redundant calculations.
+Recursive formula: The number of ways to climb stairs from step i to the top is the sum of ways from i+1 and i+2.
+The climbStairs function initiates the recursion with i=0 and returns the result.
+
+class Solution {
+    public int climbStairs(int n) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1);
+        return solve(0, n, dp);
+    }
+
+    private int solve(int i, int n, int[] dp) {
+        if (i == n) return 1;
+        if (i > n) return 0;
+
+        if (dp[i] != -1) return dp[i];
+
+        dp[i] = solve(i + 1, n, dp) + solve(i + 2, n, dp);
+
+        return dp[i];
+    }
+}
+
+
