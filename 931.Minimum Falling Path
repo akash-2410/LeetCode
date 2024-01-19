@@ -1,0 +1,33 @@
+class Solution {
+    public int minFallingPathSum(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int[][] dp = new int[n][m];//another 2 d array of same size
+
+        for (int j = 0; j < m; j++) { //store 1st row as it is 
+            dp[0][j] = matrix[0][j];
+        }
+
+        for (int row = 1; row < n; row++) {//iterate from 2nd row
+            for (int col = 0; col < m; col++) { 
+                int ld = Integer.MAX_VALUE, rd = Integer.MAX_VALUE; //to store left diagonal value and right diagonal
+                int up = matrix[row][col] + dp[row - 1][col]; // to store the sum of elemnt just above the of box and the element in the box; 
+
+                if (col - 1 >= 0) { //check for boundation becuase col is only changing not row 
+                    ld = matrix[row][col] + dp[row - 1][col - 1];
+                }
+                if (col + 1 < m) { 
+                    rd = matrix[row][col] + dp[row - 1][col + 1];
+                }
+
+                dp[row][col] = Math.min(up, Math.min(ld, rd)); // now store the min value among the values you got from 3 direction paths ld,rd,up
+            }
+        }
+
+        int mini = dp[n - 1][0];
+        for (int col = 1; col < m; col++) {
+            mini = Math.min(mini, dp[n - 1][col]); //we will get the ans in the last row so find the min value in that particuular row
+        }
+        return mini;
+    }
+}
