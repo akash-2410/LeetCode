@@ -1,0 +1,108 @@
+.......................................................................................................Approach 1.................................................................................................
+public class Solution {
+    public int[] getNSL(int[] arr, int n) { //This is just we are finding next smaller to each element to left
+        int[] result = new int[n];
+        Stack<Integer> st = new Stack<>();
+
+        for (int i = 0; i < n; i++) {
+            while (!st.isEmpty() && arr[st.peek()] > arr[i]) {
+                st.pop();
+            }
+
+            result[i] = st.isEmpty() ? -1 : st.peek();
+            st.push(i);
+        }
+
+        return result;
+    }
+
+    public int[] getNSR(int[] arr, int n) {   //This is just we are finding next smaller to each element to right
+        int[] result = new int[n];
+        Stack<Integer> st = new Stack<>();
+
+        for (int i = n - 1; i >= 0; i--) {
+            while (!st.isEmpty() && arr[st.peek()] >= arr[i]) {
+                st.pop();
+            }
+
+            result[i] = st.isEmpty() ? n : st.peek();
+            st.push(i);
+        }
+
+        return result;
+    }
+
+    public int sumSubarrayMins(int[] arr) {
+        int n = arr.length;
+
+        int[] NSL = getNSL(arr, n); //Next smaller to left
+        int[] NSR = getNSR(arr, n);  //Next smaller to right
+
+        long sum = 0;
+        int M = 1000000007;
+
+        for (int i = 0; i < n; i++) {
+            long d1 = i - NSL[i];//distance to nearest smaller to left from i
+            long d2 = NSR[i] - i;//distance to nearest smaller to right from i
+              
+            /*
+                we have d1 numbers in the left and d2 numbers in the right
+                i.e. We have d1 options to start from the left of arr[i] 
+                and d2 options to end in the right of arr[i]
+                so the total options to start and end are d1*d2
+            */
+
+            long totalWaysForIMin = d1 * d2;
+            long sumIInTotalWays = arr[i] * totalWaysForIMin;
+
+            sum = (sum + sumIInTotalWays) % M;
+        }
+
+        return (int) sum;
+    }
+}
+.......................................................................................................Approach 2.................................................................................................
+class Solution {
+    public int sumSubarrayMins(int[] arr) {
+        int length = arr.length;
+        int[] left = new int[length];
+        int[] right = new int[length];
+      
+        Arrays.fill(left, -1);
+        Arrays.fill(right, length);
+      
+        Deque<Integer> stack = new ArrayDeque<>();
+      
+        for (int i = 0; i < length; ++i) {
+            while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
+                stack.pop();
+            }
+            if (!stack.isEmpty()) {
+                left[i] = stack.peek();
+            }
+            stack.push(i);
+        }
+      
+        stack.clear();
+      
+        for (int i = length - 1; i >= 0; --i) {
+            while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
+                stack.pop();
+            }
+            if (!stack.isEmpty()) {
+                right[i] = stack.peek();
+            }
+            stack.push(i);
+        }
+      
+        int mod = (int) 1e9 + 7;
+        long answer = 0;
+      
+        for (int i = 0; i < length; ++i) {
+            answer += (long) (i - left[i]) * (right[i] - i) % mod * arr[i] % mod;
+            answer %= mod;
+        }
+      
+        return (int) answer;
+    }
+}
