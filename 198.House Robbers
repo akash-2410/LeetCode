@@ -1,0 +1,21 @@
+class Solution {
+    public int rob(int[] nums) {
+        int n=nums.length;
+        if(n==1) return nums[0];
+
+         int temp[]=new int[n+1];//temp[i]=max money stolen till ith house
+
+         temp[0]=0;//store 1st index with value 0
+
+         temp[1]=nums[0];// because we are moving 1 index forward from nums array  so to store  the value in temp move step back
+     
+     //basically we are storing the max money at each index by skipping the house or adding it 
+         for(int i=2;i<=n;i++){
+             int steal=nums[i-1]+temp[i-2];//if we are stealing current house then we have not stealed the previous house adjacent to it so add the sum of the amount in previous's previous house 
+             int skip =temp[i-1];// skipped the just previous house  
+
+            temp[i]=Math.max(steal,skip);
+         }
+         return temp[n];// ans will be at last index
+    }
+}
