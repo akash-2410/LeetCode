@@ -1,0 +1,64 @@
+..............................................................................................Brute Force.............................................................................................................
+class Solution {
+    public int[] findErrorNums(int[] nums) {
+        int dup = -1, missing = -1;
+        
+        for (int i = 1; i <= nums.length; i++) {
+            int count = 0;
+            for (int j = 0; j < nums.length; j++) {
+                if (nums[j] == i) {
+                    count++;
+                }
+            }
+            if (count == 2) {
+                dup = i;
+            } else if (count == 0) {
+                missing = i;
+            }
+        }
+        
+        return new int[] {dup, missing};
+    }
+}
+
+
+.................................................................................................Better Approach.....................................................................................................
+/*Array Initialization:
+
+Initialize a vector v of size n+1 with all elements set to 0. This array will be used to keep track of the occurrences of each number.
+Count Occurrences:
+
+Iterate through the given nums array and update the count of each number in the v array.
+Identify Duplicate and Missing:
+
+Iterate through the v array.
+If the count of a number is 2, it is the duplicate number.
+If the count of a number is 0, it is the missing number.
+Return Result:
+
+Return a vector containing the duplicate and missing numbers.*/
+
+
+class Solution {
+    public int[] findErrorNums(int[] nums) {
+        int dup = -1, missing = -1;
+        
+        for (int i = 1; i <= nums.length; i++) {
+            int count = 0;
+            for (int j = 0; j < nums.length; j++) {
+                if (nums[j] == i) {
+                    count++;
+                }
+            }
+            if (count == 2) {
+                dup = i;
+            } else if (count == 0) {
+                missing = i;
+            }
+        }
+        
+        return new int[] {dup, missing};
+    }
+}
+
+
