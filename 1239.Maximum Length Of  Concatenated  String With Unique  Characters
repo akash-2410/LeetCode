@@ -1,0 +1,47 @@
+/*Initialize the result variable to 0.
+Define a DFS function that takes the array, current path, and current index as parameters.
+In the DFS function:
+a. Check if the current path has unique characters using a helper function isUniqueChars.
+b. If the path is unique, update the result with the maximum length.
+c. If the current index is equal to the array size or the path is not unique, return.
+d. Iterate through the array starting from the current index and make recursive calls to the DFS function.
+Call the DFS function with the initial parameters.*/
+
+class Solution {
+    private int result=0;
+    public int maxLength(List<String> arr) {
+        if(arr == null || arr.size()==0) return 0;
+
+        usedfstosolve(arr,"",0); //"" is temp variaable to store string 
+        return result;
+    }
+    private void usedfstosolve(List<String>arr,String temp,int idx){
+        boolean isUniqueChar = isUniqueChars(temp);
+
+        if(isUniqueChar){
+            result=Math.max(temp.length(),result);
+        }
+
+        if (idx == arr.size() || !isUniqueChar){
+            return;
+        }
+
+        for(int i=idx;i<arr.size();i++){
+        usedfstosolve(arr,temp+arr.get(i),i+1);//for next index and also goon adding the chars in temp
+        } 
+     }
+
+
+     private boolean isUniqueChars(String s){
+         Set<Character> store=new HashSet<>();
+         for(char c:s.toCharArray()){
+             if(store.contains(c)){
+                 return false;
+             }
+             store.add(c);
+         }
+         return true;
+     }
+}
+
+
