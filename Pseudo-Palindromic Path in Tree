@@ -1,0 +1,62 @@
+....................................................................................................Approach 1......................................................................................................
+ // Using space to store count
+
+class Solution {
+    private int result = 0;
+
+    public int pseudoPalindromicPaths(TreeNode root) {
+        int[] count = new int[10];
+        solve(root, count);
+        return result;
+    }
+
+    private void solve(TreeNode root, int[] count) {
+        if (root != null) {
+            count[root.val]++;
+
+            if (root.left == null && root.right == null) {
+                int oddFreq = 0;
+                for (int i = 1; i <= 9; i++) {
+                    if (count[i] % 2 != 0) {
+                        oddFreq++;
+                    }
+                }
+
+                result += oddFreq <= 1 ? 1 : 0;
+            }
+
+            solve(root.left, count);
+            solve(root.right, count);
+
+            temp[root.val]--;
+        }
+    }
+}
+
+
+.............................................................................................Approach-2 (Using bit magic)...........................................................................................
+//T.C : O(n)
+//S.C : O(1) (I am ignoring stack recursive space, else S.C  will be O(height of tree))
+class Solution {
+    private int result = 0;
+
+    public int pseudoPalindromicPaths(TreeNode root) {
+        solve(root, 0);
+        return result;
+    }
+
+    private void solve(TreeNode root, int count) {
+        if (root != null) {
+            count = count ^ (1 << root.val); //using shift operator to and xor operation
+
+            if (root.left == null && root.right == null) { //leaf node
+                if ((count & (count - 1)) == 0) {
+                    result++;
+                }
+            }
+
+            solve(root.left, count);
+            solve(root.right, count);
+    }
+}
+}
