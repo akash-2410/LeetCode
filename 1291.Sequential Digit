@@ -1,0 +1,31 @@
+/*
+Iterate through starting digits from 1 to 9.
+For each starting digit, build a sequential number by adding consecutive digits until reaching 9 or exceeding the high value.
+Add valid sequential numbers to a vector (a).
+Sort the vector.
+
+Generate all numbers with sequential digits and check if they are in the given range.
+Fix the starting digit then do a recursion that tries to append all valid digits.
+*/
+
+
+class Solution {
+    public List<Integer> sequentialDigits(int low, int high) {
+        List<Integer> ans=new ArrayList<>();
+
+        for(int i=1;i<=9;++i){
+            int num=i;
+            int next_digit=i+1;
+
+            while(num<=high && next_digit <=9){
+                num=num*10+next_digit;
+                if(low<=num && num<= high){
+                    ans.add(num);
+                }
+                ++next_digit;
+            }
+        }
+        ans.sort(null);
+        return ans;
+    }
+}
