@@ -1,0 +1,41 @@
+import java.util.HashMap;
+
+class Solution {
+    public String minWindow(String s, String t) {
+        int n = s.length();
+        HashMap<Character,Integer> freq = new HashMap<>();
+
+        for(char ch : t.toCharArray()) { //to add the freq of characters in t 
+            freq.put(ch, freq.getOrDefault(ch, 0) + 1);
+        }
+
+        int requiredCount = t.length(); //min length should be this
+        int i = 0, j = 0;
+        int minStart = 0; //to store the index of min window size;
+        int min_window = Integer.MAX_VALUE;
+
+        // j will traverse through the whole string
+        while(j < n) { 
+            char ch_j = s.charAt(j); // so if the char at jth pos is present in the map it means its also present in t so decrease the required count
+            if(freq.containsKey(ch_j) && freq.get(ch_j) > 0)
+                requiredCount--;
+
+            freq.put(ch_j, freq.getOrDefault(ch_j, 0) - 1); // decrease the freq from map also 
+
+            while(requiredCount == 0) { // if requiredcount becomes 0 then it means all char from t are present in  the window 
+                if(min_window > j - i + 1) {
+                    min_window = j - i + 1; //size of the window
+                    minStart = i; //starting index of that window  
+                }
+                
+                char ch_i = s.charAt(i); // this will happen when we need that element but removed from the window so requierd count will increase (eg. A=1,B=0,C=0, so here A is out the window so here we need it ) 
+                freq.put(ch_i, freq.getOrDefault(ch_i, 0) + 1);
+                if(freq.get(ch_i) > 0)
+                    requiredCount++;
+                i++; //i will help to shrink window from left to right
+            }   
+            j++;
+        } 
+        return min_window == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + min_window); //return the string containing all chars
+    }
+}
