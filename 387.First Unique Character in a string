@@ -1,0 +1,18 @@
+class Solution {
+    public int firstUniqChar(String s) {
+        Map<Character,Integer> freq=new HashMap<>();
+
+        //count the chars frequencies
+        for(char ch:s.toCharArray()){
+            freq.put(ch,freq.getOrDefault(ch,0)+1);
+        }
+
+        // find the first unique character
+        for(int i=0;i<s.length();i++){
+            if(freq.get(s.charAt(i))==1){
+                return i;
+            }
+        }
+        return -1;//if no unique char found
+    }
+}
