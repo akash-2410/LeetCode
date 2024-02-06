@@ -1,0 +1,57 @@
+-------------------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------------
+Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+
+-------------------------------------------------------------------------------------------------------Examples--------------------------------------------------------------------------------------------------
+Example 1:
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+Example 2:
+Input: strs = [""]
+Output: [[""]]
+
+Example 3:
+Input: strs = ["a"]
+Output: [["a"]]
+
+-------------------------------------------------------------------------------------------------------Intuition-------------------------------------------------------------------------------------------------
+Data Structure:
+It utilizes a dictionary (d) to store anagram groups. The key for each group is the sorted version of the words.
+
+Processing:
+It iterates through each word in the input list (words).
+For each word, it creates a key (s) by sorting its characters using "".join(sorted(i)).
+Checks if the key is already present in the dictionary (d).
+If not present, it adds a new entry with the key and a list containing the word.
+If already present, it appends the word to the existing list associated with that key.
+
+Return Value:
+The method returns the values (anagram groups) of the dictionary (d.values()).
+
+
+-----------------------------------------------------------------------------------------------------Solution-----------------------------------------------------------------------------------------------------
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+          // Map to store anagram groups
+         Map<String, List<String>> map = new HashMap<>();
+       
+        // Iterate through each word in the input array
+        for (String word : strs) {
+            // Sort the characters in the word to create a key
+            char[] charArray = word.toCharArray();
+            Arrays.sort(charArray);
+            String key = new String(charArray);
+             // If key is not in the map, add a new entry with the word as a list
+            if (!map.containsKey(key)) {
+                map.put(key, new ArrayList<>());
+            }
+           // If key is already present, append the word to the existing list
+            map.get(key).add(word);
+        }
+          // Convert map values to a list and return
+        return new ArrayList<>(map.values());
+    }
+}
