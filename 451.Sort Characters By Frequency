@@ -1,0 +1,75 @@
+---------------------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------------------
+Given a string s, sort it in decreasing order based on the frequency of the characters. The frequency of a character is the number of times it appears in the string.
+
+Return the sorted string. If there are multiple answers, return any of them.
+
+---------------------------------------------------------------------------------------------------Examples--------------------------------------------------------------------------------------------------------
+Example 1:
+
+Input: s = "tree"
+Output: "eert"
+Explanation: 'e' appears twice while 'r' and 't' both appear once.
+So 'e' must appear before both 'r' and 't'. Therefore "eetr" is also a valid answer.
+Example 2:
+
+Input: s = "cccaaa"
+Output: "aaaccc"
+Explanation: Both 'c' and 'a' appear three times, so both "cccaaa" and "aaaccc" are valid answers.
+Note that "cacaca" is incorrect, as the same characters must be together.
+
+
+---------------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------------------
+
+~Map Initialization:
+A HashMap named map is initialized. This map is used to store characters as keys and their corresponding frequencies as values. Initially, it's empty.
+
+~Counting Frequencies:
+The input string s is traversed character by character using a foreach loop (for(char ch : s.toCharArray())).
+For each character, its frequency is updated in the map using map.put(ch, map.getOrDefault(ch, 0) + 1). If the character is not present in the map, its default frequency is considered as 0, and 1 is added to it.
+
+~Converting Map to List of Entries:
+The map is converted to a list of entries (List<Map.Entry<Character, Integer>> list) using map.entrySet(). Each entry in this list represents a character-frequency pair.
+
+~Sorting Entries by Frequency:
+The list of entries is sorted based on the frequency of characters in descending order. This is achieved using the sort() method of the list, where a custom comparator (a, b) -> b.getValue() - a.getValue()
+is provided. This lambda expression sorts entries by their values (frequencies) in descending order.
+
+~Building Result String:
+A StringBuilder named result is initialized. StringBuilder is an efficient way to build strings in Java, especially when there are multiple string concatenations.
+The sorted list of entries is traversed using a foreach loop (for(Map.Entry<Character, Integer> entry : list)).
+For each entry, the character and its frequency are retrieved (char ch = entry.getKey(); int freq = entry.getValue();).
+The character is appended to the result StringBuilder freq times to reflect its frequency in the final string.
+
+~Returning Result:
+The result string is obtained by calling result.toString() and returned as the output of the function.
+
+---------------------------------------------------------------------------------------------------Code----------------------------------------------------------------------------------------------------------
+
+import java.util.*;
+
+public class Solution {
+    public String frequencySort(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        
+        for(char ch : s.toCharArray()) {
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+        }
+        
+        List<Map.Entry<Character, Integer>> list = new ArrayList<>(map.entrySet());
+        
+        list.sort((a, b) -> b.getValue() - a.getValue());
+        
+        StringBuilder result = new StringBuilder();
+        
+        for(Map.Entry<Character, Integer> entry : list) {
+            char ch = entry.getKey();
+            int freq = entry.getValue();
+            for(int i = 0; i < freq; i++) {
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+}
+
+
