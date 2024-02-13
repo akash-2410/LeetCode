@@ -1,0 +1,71 @@
+--------------------------------------------------------------------------------------------------Question----------------------------------------------------------------------------------------------------------
+Given an array of strings words, return the first palindromic string in the array. If there is no such string, return an empty string "".
+A string is palindromic if it reads the same forward and backward.
+
+--------------------------------------------------------------------------------------------------Example----------------------------------------------------------------------------------------------------------
+Example 1:
+Input: words = ["abc","car","ada","racecar","cool"]
+Output: "ada"
+Explanation: The first string that is palindromic is "ada".
+Note that "racecar" is also palindromic, but it is not the first.
+
+Example 2:
+Input: words = ["notapalindrome","racecar"]
+Output: "racecar"
+Explanation: The first and only string that is palindromic is "racecar".
+
+
+--------------------------------------------------------------------------------------------------Intution Approach 1 with Code -----------------------------------------------------------------------------------
+
+Objective: Find the first palindrome in a vector of strings.
+For Loop: Iterates through each string in the vector.
+String Reversal: Reverses the string using the reverse() function.
+Palindrome Check: Compares the reversed string with the original.
+Result Handling: Returns the first palindrome or an empty string.
+
+Code:
+class Solution {
+    public String firstPalindrome(String[] words) {
+        for(String word:words){
+            StringBuilder reversed=new StringBuilder(word).reverse();
+            if(word.equals(reversed.toString())){
+                return word;
+            }
+        }
+        return "";
+    }
+}
+
+------------------------------------------------------------------------------------------Intution Approach 2 with Code --------------------------------------------------------------------------------------------
+
+Objective: Find the first palindrome in a vector of strings.
+Function - firstPalindrome: Returns the first palindrome found in the vector.
+Function - isPalindrome: Checks if a string is a palindrome.
+Checking Palindrome in Loop: Calls "isPalindrome" for each word in the vector.
+Result Handling: Returns the first palindrome found, or an empty string if none exists or the vector is empty.
+
+Code:
+public class Solution {
+    public String firstPalindrome(String[] words) {
+        for (String word : words) {
+            if (isPalindrome(word)) {
+                return word;
+            }
+        }
+        return "";
+    }
+
+    private boolean isPalindrome(String s) {
+        int i = 0;
+        int j = s.length() - 1;
+        while (i < j) {
+            if (s.charAt(i++) != s.charAt(j--)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+
