@@ -1,0 +1,145 @@
+------------------------------------------------------------------------------------------------Question----------------------------------------------------------------------------------------------------------
+There are n cities connected by some number of flights. You are given an array flights where flights[i] = [fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost pricei.
+
+You are also given three integers src, dst, and k, return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.
+
+------------------------------------------------------------------------------------------------Examples-----------------------------------------------------------------------------------------------------------
+Input: n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]], src = 0, dst = 3, k = 1
+Output: 700
+Explanation:
+The graph is shown above.
+The optimal path with at most 1 stop from city 0 to 3 is marked in red and has cost 100 + 600 = 700.
+Note that the path through cities [0,1,2,3] is cheaper but is invalid because it uses 2 stops.
+
+------------------------------------------------------------------------------------------------Approach1 Intution with Code  ------------------------------------------------------------------------------------
+
+Initialization: The distance array is initialized with Integer.MAX_VALUE except for the source airport, which is initialized with 0.
+
+Iteration: The method iterates k times, where k is the maximum number of stops allowed. In each iteration, it checks if it is possible to reach the destination airport with at most k stops.
+
+Checking possibility: The isRoutePossible method checks if it is possible to reach the destination airport with at most k stops. 
+It iterates over each flight and checks if it is possible to reach the destination airport with a lower cost by taking the current flight.
+If it is possible, it updates the distance array and sets the result variable to false.
+
+Returning result: If the result variable is still true after the iterations, it means that it is not possible to reach the destination airport with at most k stops.
+In this case, the method returns -1. Otherwise, it returns the minimum cost to reach the destination airport.
+
+Code:
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+         int[] distance = new int[n];
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        distance[src] = 0;
+        for (int i = 0; i <= k; i++) {
+            if (isRoutePossible(distance, flights)) {
+                break;
+            }
+        }
+        return distance[dst] == Integer.MAX_VALUE ? -1 : distance[dst];
+    }
+    private boolean isRoutePossible(int[] dist, int[][] flights) {
+        int[] copy = Arrays.copyOf(dist, dist.length);
+        boolean result = true;
+
+        for (int[] flight : flights) {
+            int src = flight[0];
+            int dst = flight[1];
+            int  cost =flight[2];
+
+            if (copy[src] < Integer.MAX_VALUE && dist[dst] > dist[src] + cost) {
+                dist[dst] = cost + copy[src];
+                result = false;
+            }
+        }
+        return result;
+    }
+}
+
+----------------------------------------------------------------------------------------------Approach2 Intution with Code  --------------------------------------------------------------------------------------
+
+
+Graph Representation: The function represents the flights as a graph using an unordered map, where each node represents an airport (flight[0]) and its outgoing edges represent flights to other airports 
+(flight[1]) along with their prices.
+
+Initialization: It initializes a vector dist of size n with all elements set to INT_MAX, representing the minimum cost to reach each airport from the source airport. 
+The cost to reach the source airport itself is set to 0.
+
+Breadth-First Search (BFS): It performs a BFS traversal starting from the source airport (src) to find the minimum cost to reach the destination airport (dst) with at most k stops.
+
+Queue Operations: During BFS traversal, a queue q is used to keep track of the current airport and the distance traveled so far. 
+At each iteration, the function dequeues a node from the queue and explores its neighboring airports.
+
+Update Minimum Cost: For each neighboring airport, if the cost to reach it via the current airport is less than the previously calculated minimum cost,
+the function updates the minimum cost and enqueues the neighboring airport into the queue for further exploration.
+
+Time complexity:
+O(E∗K)
+(E is the number of flights and k is the maximum number of stops.)
+Space complexity:
+O(n)
+(V is the number of vertices (n) and E is the number of edges.)
+
+Code:
+import java.util.*;
+
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        Map<Integer, List<int[]>> adj = new HashMap<>();
+        for (int[] flight : flights) {
+            adj.computeIfAbsent(flight[0], key -> new ArrayList<>()).add(new int[] {flight[1], flight[2]});
+        }
+
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[] {src, 0});
+        int stops = 0;
+
+        while (!q.isEmpty() && stops <= k) {
+            int sz = q.size();
+            while (sz-- > 0) {
+                int[] curr = q.poll();
+                int node = curr[0];
+                int distance = curr[1];
+
+                if (!adj.containsKey(node)) continue;
+
+                for (int[] next : adj.get(node)) {
+                    int neighbour = next[0];
+                    int price = next[1];
+                    if (price + distance >= dist[neighbour]) continue;
+                    dist[neighbour] = price + distance;
+                    q.offer(new int[] {neighbour, dist[neighbour]});
+                }
+            }
+            stops++;
+        }
+
+        return dist[dst] == Integer.MAX_VALUE ? -1 : dist[dst];
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
