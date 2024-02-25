@@ -11,16 +11,40 @@ Example 1:
 Input: nums = [2,3,6]
 Output: true
 Explanation: In this example, there are 3 possible pairs of indices: (0, 1), (0, 2), and (1, 2).
-To go from index 0 to index 1, we can use the sequence of traversals 0 -> 2 -> 1, where we move from index 0 to index 2 because gcd(nums[0], nums[2]) = gcd(2, 6) = 2 > 1,
-and then move from index 2 to index 1 because gcd(nums[2], nums[1]) = gcd(6, 3) = 3 > 1.
-To go from index 0 to index 2, we can just go directly because gcd(nums[0], nums[2]) = gcd(2, 6) = 2 > 1. Likewise, to go from index 1 to index 2, we can just go directly because gcd(nums[1], 
+To go from index 0 to index 1, we can use the sequence of traversals 0 -> 2 -> 1, where we move from index 0 to index 2 because gcd(nums[0], 
+nums[2]) = gcd(2, 6) = 2 > 1,and then move from index 2 to index 1 because gcd(nums[2], nums[1]) = gcd(6, 3) = 3 > 1.
+To go from index 0 to index 2, we can just go directly because gcd(nums[0], nums[2]) = gcd(2, 6) = 2 > 1. 
+Likewise, to go from index 1 to index 2, we can just go directly because gcd(nums[1], 
 nums[2]) = gcd(3, 6) = 3 > 1.
 
-----------------------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------------------
 Example 2:
 Input: nums = [3,9,5]
 Output: false
 Explanation: No sequence of traversals can take us from index 0 to index 2 in this example. So, we return false.
+----------------------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------------------
+ It uses the concept of disjoint set union (DSU) to keep track of the prime factors of each number in the input array.
+The parent array is used to store the parent of each number, and the count array is used to store the count of each number.
+
+The max variable is initialized to the maximum value in the input array. This is because we need to iterate from 1 to max to check for prime factors.
+
+The parent array is initialized with the same indices as the numbers in the input array. Each number is its own parent initially.
+
+The count array is initialized with zeros. This array will be used to store the count of each number.
+
+The code iterates through the input array and checks if each number is prime. If a number is prime, it is added as a valid starting point.
+
+The union function is used to merge two sets of numbers. In this case, it is used to merge the sets of numbers that have the same prime factors.
+
+The find function is used to find the parent of a number. This function uses path compression to optimize the time complexity of the algorithm.
+
+The code iterates through the numbers in the input array and checks if the parent of each number is the same. If the parents are not the same, 
+it means that the numbers cannot be traversed in pairs, so the function returns false.
+
+If all the numbers can be traversed in pairs, the function returns true.
+
+In summary, the updated code uses a more efficient approach to solve the problem. 
+It uses the concept of disjoint set union to keep track of the prime factors of each number in the input array. This approach allows the code to handle larger input
+sizes more efficiently.
 ----------------------------------------------------------------------------------------------------Code------------------------------------------------------------------------------------------------------------
 class Solution {
 
