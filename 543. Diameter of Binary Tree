@@ -43,8 +43,8 @@ class Solution {
         int left = diameter(root.left, result);
         int right = diameter(root.right, result);
 
-        result[0] = Math.max(result[0], left + right);
+        result[0] = Math.max(result[0], left + right);//left + right edges;
 
-        return Math.max(left, right) + 1;
+        return Math.max(left, right) + 1;//when passing to root one edge is being added
     }
 }
