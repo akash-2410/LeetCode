@@ -1,0 +1,67 @@
+--------------------------------------------------------------------------------------------------Question----------------------------------------------------------------------------------------------------------
+Given the root of a binary tree, return the leftmost value in the last row of the tree.
+--------------------------------------------------------------------------------------------------Example----------------------------------------------------------------------------------------------------------
+Example 1:
+Input: root = [2,1,3]
+Output: 1
+
+Example 2:
+Input: root = [1,2,3,4,null,5,6,null,null,7]
+Output: 7
+--------------------------------------------------------------------------------------------------Intution----------------------------------------------------------------------------------------------------------
+Parameters: Accepts root (current node) and currD (current depth) as parameters.
+Base Case: Checks if the current node (root) is NULL. Returns from the function if the node is NULL.
+Depth Update: Checks if the current depth (currD) is greater than the previous maximum depth. If true, updates both depth and left variables with values corresponding to the new level.
+Recursive Calls: Regardless of depth updates, recursively calls the function on both left and right subtrees. Increments currD by 1 for each recursive call.
+Result: After all recursive calls finish, returns the leftmost value (left) and its level (depth).
+--------------------------------------------------------------------------------------------------Code----------------------------------------------------------------------------------------------------------
+Using DFS
+class Solution {
+    private int maxDepth;
+    private int bottomLeft;
+    
+    public int findBottomLeftValue(TreeNode root) {
+        maxDepth = -1;
+        
+        dfs(root, 0);
+        return bottomLeft;
+    }
+    
+    private void dfs(TreeNode root, int currDepth) {
+        if (root == null) {
+            return;
+        }
+        
+        if (currDepth > maxDepth) {
+            maxDepth = currDepth;
+            bottomLeft = root.val;
+        }
+        
+        dfs(root.left, currDepth + 1);
+        dfs(root.right, currDepth + 1);
+    }
+}
+
+
+Using BfS
+public class Solution {
+    public int findBottomLeftValue(TreeNode root) {
+        int last = 0;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(root);
+
+        while (!q.isEmpty()) {
+            int count = q.size();
+            for (int i = 0; i < count; i++) {
+                TreeNode curr = q.poll();
+                if (i == 0)
+                    last = curr.val;  // last leftMost val
+                if (curr.left != null)
+                    q.add(curr.left);
+                if (curr.right != null)
+                    q.add(curr.right);
+            }
+        }
+        return last;
+    }
+}
