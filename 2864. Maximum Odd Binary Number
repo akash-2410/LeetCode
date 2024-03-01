@@ -1,0 +1,52 @@
+------------------------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------------------
+You are given a binary string s that contains at least one '1'.
+
+You have to rearrange the bits in such a way that the resulting binary number is the maximum odd binary number that can be created from this combination.
+
+Return a string representing the maximum odd binary number that can be created from the given combination.
+
+Note that the resulting string can have leading zeros.
+------------------------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------------------
+Example 1:
+Input: s = "010"
+Output: "001"
+Explanation: Because there is just one '1', it must be in the last position. So the answer is "001".
+
+Example 2:
+Input: s = "0101"
+Output: "1001"
+Explanation: One of the '1's must be in the last position. The maximum number that can be made with the remaining digits is "100". So the answer is "1001".
+
+------------------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------------
+
+public class Solution {
+    public String maximumOddBinaryNumber(String s) {
+        int n = s.length();
+
+        // Initialize result string with '0' of length n
+        StringBuilder result = new StringBuilder();
+        for (int k = 0; k < n; k++) {
+            result.append('0');
+        }
+        //count the number of ones
+        int countOnes = 0;
+        for (char ch : s.toCharArray()) {
+            if (ch == '1') {
+                countOnes++;
+            }
+        }
+
+
+        int j = 0;
+        //moving from MSB assign ones to MSB and then thier adjacent
+        while (countOnes > 1) {
+            result.setCharAt(j, '1');
+            j++;
+
+            countOnes--;
+        }
+       // LSB=1 for odd numbers
+        result.setCharAt(n - 1, '1');
+        return result.toString();
+    }
+}
