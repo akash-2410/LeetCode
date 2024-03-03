@@ -1,0 +1,40 @@
+-----------------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------------------------
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+-----------------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------------------------
+
+Example 1:
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+
+-----------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------------------
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode left=head;
+        ListNode right=head;
+        int i=1;
+        while(i<=n){
+             //first move right pointer to the nth distance 
+            //from left pointer
+            //eg: 1->2->3->4->5 left and right at start will point to 1. here if ngiven is 2nd node to be deleted from end so its (4) 
+            //so moving the right pointer to (4) and left will be at head only ,afterward left will traverse and goto (3) 
+            //and then it willpoint to (5) directly as given below
+            right=right.next;
+            i++;
+        }
+        //if right becomes null it means we have to eliminate 
+        //first element  so remove it
+        if(right==null) return left.next;
+        
+        //if not null go on till the nth point
+        while(right.next!=null){
+            left=left.next;
+            right=right.next;
+        }
+        //if found the element just before the nth element from end then point 
+        //this node to the next of that nth node
+        left.next=left.next.next;
+         
+         // return head
+        return head;
+    }
+}
