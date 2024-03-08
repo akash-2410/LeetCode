@@ -1,0 +1,64 @@
+-------------------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------------------------
+You are given an array nums consisting of positive integers.
+
+Return the total frequencies of elements in nums such that those elements all have the maximum frequency.
+
+The frequency of an element is the number of occurrences of that element in the array.
+-------------------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------------------------
+Example 1:
+
+Input: nums = [1,2,2,3,1,4]
+Output: 4
+Explanation: The elements 1 and 2 have a frequency of 2 which is the maximum frequency in the array.
+So the number of elements in the array with maximum frequency is 4.
+-------------------------------------------------------------------------------------------------Intution-----------------------------------------------------------------------------------------------------------
+Initialize an array arr of size 101 to count the frequency of each number in the input array nums.
+Initialize maxFreq to 0 and total to 0 to keep track of the maximum frequency and the total number of elements with the maximum frequency.
+Iterate through the nums array and for each number, increment its count in the arr array.
+Check if the frequency of the current number is greater than maxFreq. If it is, then update maxFreq to the new frequency and set total to the new frequency as well.
+If the frequency of the current number is equal to maxFreq, then increment total by the frequency of the current number.
+At the end of the iteration, total will hold the total number of elements with the maximum frequency in the nums array.
+The time complexity of this solution is O(n) and the space complexity is O(1), where n is the length of the nums array.
+
+-------------------------------------------------------------------------------------------------Code 1-----------------------------------------------------------------------------------------------------------
+public class Solution {
+    public int maxFrequencyElements(int[] nums) {
+        int[] arr = new int[101];
+
+        int maxFreq = 0;
+        int total = 0;
+
+        for (int num : nums) {
+            arr[num]++;
+
+            int freq = arr[num];
+
+            if (freq > maxFreq) {
+                maxFreq = freq;
+                total = freq;
+            } else if (freq == maxFreq) {
+                total += freq;
+            }
+        }
+
+        return total;
+    }
+}
+
+-------------------------------------------------------------------------------------------------Code 2-------------------------------------------------------------------------------------------------------------
+
+public class Solution {
+    public int maxFrequencyElements(int[] nums) {
+        int[] arr = new int[101];
+
+        int maxFreq = 0;
+
+        for (int num : nums) {
+            arr[num]++;
+            maxFreq = Math.max(maxFreq, arr[num]);
+        }
+
+        final int finalMaxFreq = maxFreq; //why final keyword ? To access inside lambda
+        return (int) Arrays.stream(arr).filter(count -> count == finalMaxFreq).count() * finalMaxFreq;
+    }
+}
