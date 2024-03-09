@@ -1,0 +1,58 @@
+---------------------------------------------------------------------------------------------------------Question----------------------------------------------------------------------------------------------------
+Given two integer arrays nums1 and nums2, sorted in non-decreasing order, return the minimum integer common to both arrays. If there is no common integer amongst nums1 and nums2, return -1.
+
+Note that an integer is said to be common to nums1 and nums2 if both arrays have at least one occurrence of that integer.
+---------------------------------------------------------------------------------------------------------Example----------------------------------------------------------------------------------------------------
+Example 1:
+Input: nums1 = [1,2,3], nums2 = [2,4]
+Output: 2
+Explanation: The smallest element common to both arrays is 2, so we return 2.
+
+Example 2:
+Input: nums1 = [1,2,3,6], nums2 = [2,3,4,5]
+Output: 2
+Explanation: There are two common elements in the array 2 and 3 out of which 2 is the smallest, so 2 is returned
+---------------------------------------------------------------------------------------------------------Intution----------------------------------------------------------------------------------------------------
+Initialize Pointers: Initialize two pointers, i and j, both starting from the beginning of the sorted arrays.
+Find Common Element: Use a while loop that continues until either i or j reaches the end of their respective arrays or a common element is found.
+Check if nums1[i] equals nums2[j]. If true, return this common element.
+If nums1[i] < nums2[j], increment i.
+If nums2[j] < nums1[i], increment j.
+Return -1 if No Common Element Found: If the loop completes without finding a common element, return -1.
+Time Complexity: O(n + m)
+Space Complexity: O(1)
+---------------------------------------------------------------------------------------------------------Code-------------------------------------------------------------------------------------------------------
+class Solution {
+    public int getCommon(int[] nums1, int[] nums2) {
+        int i=0, j=0;
+        int length1=nums1.length;
+        int length2= nums2.length;
+        // For faster solution
+        if (nums1[length1-1] < nums2[0] || nums2[length2-1] < nums1[0])
+            return -1;
+
+        // Two pointer approach
+        while (i<length1 && j<length2) {
+            if (nums1[i] == nums2[j]) return nums1[i];
+            else if (nums1[i] > nums2[j]) j++;
+            else i++;
+        } return -1;
+    }
+}
+
+// or can Also be writeen As
+class Solution {
+    public int getCommon(int[] nums1, int[] nums2) {
+        int i=0,j=0;
+        while(i<nums1.length && j<nums2.length){
+            if(nums1[i]==nums2[j]){
+                return nums1[i];
+            } else if(nums1[i]<nums2[j]){
+                i++;
+            }else{
+                j++;
+            }
+        }
+        return -1;
+    }
+}
