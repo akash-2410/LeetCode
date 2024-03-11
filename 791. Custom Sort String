@@ -1,0 +1,43 @@
+-------------------------------------------------------------------------------------------------Question-----------------------------------------------------------------------------------------------------------
+You are given two strings order and s. All the characters of order are unique and were sorted in some custom order previously.
+Permute the characters of s so that they match the order that order was sorted. More specifically, if a character x occurs before a character y in order, then x should occur before y in the permuted string.
+Return any permutation of s that satisfies this property.
+-------------------------------------------------------------------------------------------------Example-----------------------------------------------------------------------------------------------------------
+Example 1:
+Input:  order = "cba", s = "abcd" 
+Output:  "cbad" 
+Explanation: "a", "b", "c" appear in order, so the order of "a", "b", "c" should be "c", "b", and "a".
+Since "d" does not appear in order, it can be at any position in the returned string. "dcba", "cdba", "cbda" are also valid outputs.
+
+-------------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------------------
+public class Solution {
+    public String customSortString(String order, String str) {
+        int[] count = new int[26];
+      
+       // This loop iterates through each character in str and increments the corresponding frequency in the count array.   
+        for (char x : str.toCharArray())
+            count[x - 'a']++;
+    
+        StringBuilder result = new StringBuilder(); // to store string
+
+        // This loop iterates through each character in order and appends it to result as many times as its frequency in str.
+        for (char ch : order.toCharArray()) {
+            while (count[ch - 'a']-- > 0) {
+                result.append(ch);
+            }
+        }
+
+        // Add the characters which are not present in 'order' lefout ones add them also
+        for (char ch : str.toCharArray()) {
+            if (count[ch - 'a'] > 0) {
+                result.append(ch);
+            }
+        }
+
+        return result.toString();
+    }
+}
+
+
+
+
