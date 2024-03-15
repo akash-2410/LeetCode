@@ -1,0 +1,54 @@
+--------------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------------------
+Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+
+The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+
+You must write an algorithm that runs in O(n) time and without using the division operation.
+--------------------------------------------------------------------------------------------------Example----------------------------------------------------------------------------------------------------------
+Example 1:
+Input: nums = [1,2,3,4]
+Output: [24,12,8,6]
+
+Example 2:
+Input: nums = [-1,1,0,-3,3]
+Output: [0,0,9,0,0]
+--------------------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------------------
+Product Calculation: The code aims to find the product of all elements in the input array except the element at the current index.
+
+Two Passes: The code utilizes a two-pass approach to calculate the product of all elements except the current one.
+
+First Pass (Left Side Products):
+It initializes a variable product to 1.
+It iterates through the array from left to right.
+At each index i, it stores the product of all elements to the left of i in the ans array.
+After updating ans[i], it multiplies product by the current element at nums[i].
+
+Second Pass (Right Side Products):
+It reinitializes the product variable to 1.
+It iterates through the array from right to left.
+At each index i, it multiplies the already computed left-side product (ans[i]) with the product of all elements to the right of i.
+It updates the ans[i] with this product and then multiplies product by the current element at nums[i].
+Returning Result: Finally, the function returns the ans array, which contains the product of all elements except the one at the corresponding index.
+
+Optimization:
+Instead of calculating the product of all elements to the left and right of each element in real-time, it computes them in separate passes, thereby reducing time complexity to O(n).
+This approach avoids the need for division and ensures linear time complexity without using extra space except for the result array.
+By storing left-side and right-side products separately, it ensures the integrity of the product except self, providing a reliable solution.
+--------------------------------------------------------------------------------------------------Code-------------------------------------------------------------------------------------------------------------
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int product = 1;
+        int[] ans = new int[nums.length];//to store the product of left and right side of the elements
+        for (int i = 0; i < nums.length; i++) {
+            ans[i] = product;
+            product = product * nums[i]; // storing the product from left side of particular element at ith index
+        }
+        product = 1;
+        for (int i = nums.length - 1; i >= 0; i--) { //storing the product from right side of particular element at ith index
+            ans[i] = ans[i] * product;
+            product = product * nums[i];
+        }
+        return ans;
+    }
+}
+
