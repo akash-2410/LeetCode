@@ -1,0 +1,70 @@
+----------------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------------------
+You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti.
+You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
+Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
+Return intervals after the insertion.
+Note that you don't need to modify intervals in-place. You can make a new array and return it.
+----------------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------------------
+Example 1:
+Input: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+Output: [[1,2],[3,10],[12,16]]
+Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
+----------------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------------------
+Initialization:
+Initialize an ArrayList called result to store the merged intervals.
+Initialize i to 0 to traverse through the intervals array.
+
+Merge Before New Interval:
+Iterate over intervals while the end of the current interval is less than the start of the new interval.
+Add intervals directly to the result list as they don't overlap with the new interval.
+
+Merge Overlapping Intervals with New Interval:
+While there are still intervals left and the start of the current interval is less than or equal to the end of the new interval:
+Update the start of the new interval to the minimum of its current start and the start of the current interval.
+Update the end of the new interval to the maximum of its current end and the end of the current interval.
+Move to the next interval.
+
+Add Merged Interval:
+After merging all overlapping intervals, add the new merged interval (newInterval) to the result list.
+
+Add Remaining Intervals:
+Add any remaining intervals from the intervals array that do not overlap with the new interval.
+
+Convert to 2D Array:
+Convert the ArrayList result to a 2D array arr to match the return type.
+
+Return:
+Return the 2D array arr, containing the merged intervals.
+
+----------------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------------
+class Solution {
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        List<int[]> result = new ArrayList<>();
+        int i = 0;
+        
+        while (i < intervals.length && intervals[i][1] < newInterval[0]) {
+            result.add(intervals[i]);
+            i++;
+        }
+        
+        while (i < intervals.length && intervals[i][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+            i++;
+        }
+        result.add(newInterval);
+        
+        while (i < intervals.length) {
+            result.add(intervals[i]);
+            i++;
+        }
+        
+        int[][] arr = new int[result.size()][2];
+        for (int j = 0; j < result.size(); j++) {
+            arr[j] = result.get(j);
+        }
+        
+        return arr;
+    }
+}
+
