@@ -1,0 +1,101 @@
+---------------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------------------
+There are some spherical balloons taped onto a flat wall that represents the XY-plane.
+The balloons are represented as a 2D integer array points where points[i] = [xstart, xend] denotes a balloon whose horizontal diameter stretches between xstart and xend. 
+You do not know the exact y-coordinates of the balloons.
+
+Arrows can be shot up directly vertically (in the positive y-direction) from different points along the x-axis. 
+A balloon with xstart and xend is burst by an arrow shot at x if xstart <= x <= xend. There is no limit to the number of arrows that can be shot. A shot arrow keeps traveling up infinitely,
+bursting any balloons in its path.
+
+Given the array points, return the minimum number of arrows that must be shot to burst all balloons
+---------------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------------------
+Example 1:
+Input: points = [[10,16],[2,8],[1,6],[7,12]]
+Output: 2
+Explanation: The balloons can be burst by 2 arrows:
+- Shoot an arrow at x = 6, bursting the balloons [2,8] and [1,6].
+- Shoot an arrow at x = 11, bursting the balloons [10,16] and [7,12].
+
+Example 2:
+Input: points = [[1,2],[3,4],[5,6],[7,8]]
+Output: 4
+Explanation: One arrow needs to be shot for each balloon for a total of 4 arrows.
+----------------------------------------------------------------------------------------Intuiton With Code1---------------------------------------------------------------------------------------------------------
+It begins by sorting the given array of points based on their starting positions (the first index of each point) using Arrays.sort method and a custom comparator.
+It initializes prev as the first point in the sorted array and sets count to 1, indicating that at least one arrow is needed.
+It then iterates through the sorted array of points starting from the second point.
+For each point, it compares the starting position of the current point with the ending position of the previous point to determine if there is an overlap:
+If there's no overlap (the current start point is greater than the previous end point), it means a new arrow is needed. So, it increments the count and updates prev to the current point.
+If there's an overlap, it updates the prev endpoint to the minimum of the current endpoint and the previous endpoint. This is because we need to find the common area of overlap among all balloons.
+After iterating through all the points, the function returns the final count, which represents the minimum number of arrows required to burst all the balloons.
+-----------------------------Code--------------------------
+class Solution {
+    public int findMinArrowShots(int[][] points) {
+        int n = points.length;
+        Arrays.sort(points, Comparator.comparingInt(a -> a[0]));//sorting on the basis of first index of points
+        
+        int[] prev = points[0];
+        int count = 1;
+        for (int i = 1; i < n; i++) {
+            int currStartPoint = points[i][0];
+            int currEndPoint = points[i][1];
+            
+            int prevStartPoint = prev[0];
+            int prevEndPoint = prev[1];
+            
+            if (currStartPoint > prevEndPoint) { //no overlap
+                count++;
+                prev = points[i];
+            } else {
+                //overlap
+                prev[0] = Math.max(prevStartPoint, currStartPoint);
+                prev[1] = Math.min(prevEndPoint, currEndPoint);
+            }
+        }
+        
+        return count;
+    }
+}
+
+----------------------------------------------------------------------------------------Intuiton With Code1---------------------------------------------------------------------------------------------------------
+Converting Points to Longs:
+Each point in the points array consists of two integers, representing the start and end points of a balloon's range.
+To efficiently sort the points based on their start and end positions together, the code converts each point into a long integer.
+It combines the start and end points into a single long integer using bit manipulation:
+The end point is shifted left by 32 bits (((long)points[i][1]) << 32) to occupy the higher bits.
+The start point is combined with the lower bits using bitwise OR (|).
+This creates a long integer where the higher 32 bits represent the end point, and the lower 32 bits represent the start point.
+
+Sorting the Longs:
+After converting the points to long integers, the code sorts the array of longs (A) using Arrays.sort().
+Sorting based on long integers ensures that the points are sorted primarily by their end points and secondarily by their start points.
+
+Counting Arrows:
+The code then iterates through the sorted array of longs.
+It maintains a variable prev to keep track of the previous end point encountered.
+For each long integer, it extracts the end point ((int)(A[i] >>> 32)) and compares it with the previous end point (prev).
+If the current end point is greater than the previous end point, it means the current balloon is not overlapped by the previous balloon, and a new arrow is required.
+In such cases, it increments the count and updates the prev to the current end point.
+
+Returning the Count:
+Finally, the function returns the count, which represents the minimum number of arrows required to burst all the balloons.
+-----------------------------Code--------------------------
+class Solution {
+    public int findMinArrowShots(int[][] points) {
+        long[] A = new long[points.length];
+        for(int i=0; i < points.length; i++){
+            A[i] = (((long)points[i][1]) << 32) | (points[i][0] & 0xFFFFFFFFL);
+        }
+        Arrays.sort(A);
+        int prev = (int)(A[0] >>> 32);
+        int count = 1;
+        for(int i=1; i< A.length; i++){
+            if((int)A[i] > prev){
+                count++;
+                prev = (int)(A[i] >>> 32);
+            }
+        }
+        return count;
+    }
+}
+
