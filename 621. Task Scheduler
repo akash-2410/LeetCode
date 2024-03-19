@@ -1,0 +1,102 @@
+-----------------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------------------
+You are given an array of CPU tasks, each represented by letters A to Z, and a cooling time, n.
+Each cycle or interval allows the completion of one task. Tasks can be completed in any order, but there's a constraint: identical tasks must be separated by at least n intervals due to cooling time.
+
+​Return the minimum number of intervals required to complete all tasks.
+-----------------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------------------
+Example 1:
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+Output: 8
+Explanation: A possible sequence is: A -> B -> idle -> A -> B -> idle -> A -> B.
+After completing task A, you must wait two cycles before doing A again. The same applies to task B. 
+In the 3rd interval, neither A nor B can be done, so you idle. By the 4th cycle, you can do A again as 2 intervals have passed.
+
+-----------------------------------------------------------------------------------------------------Intution and Code Approachh1 -------------------------------------------------------------------------------
+Frequency Calculation:
+The code initializes an array freq of size 26 to store the frequency of each task.
+It iterates through the tasks array and increments the frequency of each task in the freq array.
+
+Sorting Frequencies:
+After counting the frequency of each task, the code sorts the freq array in ascending order.
+Sorting helps identify the task with the maximum frequency, as it will be at the end of the sorted array.
+
+Calculating Work and Idle Time:
+The variable work is calculated as the frequency of the task with the maximum frequency minus 1. This represents the number of times the most frequent task needs to be executed, excluding the last execution.
+idle is calculated as the product of work and the cooling interval n. This represents the total idle time needed between executions of the most frequent task.
+
+Adjusting Idle Time for Other Tasks:
+The code then iterates through the frequencies of tasks (excluding the most frequent task) from the second highest frequency to the lowest.
+For each task, it subtracts the minimum of work and the frequency of the task from the idle time. This adjustment accounts for the idle time needed between executions of other tasks.
+
+Returning the Result:
+Finally, the code checks if the calculated idle time is less than 0. If it is, it means no idle time is needed, so it returns the length of the tasks array.
+Otherwise, it returns the sum of the length of the tasks array and the adjusted idle time, representing the minimum total time needed to execute all tasks with the given cooling interval.
+
+
+-----------------------Code---------------------------
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        int freq[]=new int[26];
+        for(char task :tasks){
+            freq[task-'A']++;
+        }
+        Arrays.sort(freq);
+        int work= freq[25]-1;
+        int idle =work*n;
+
+        for(int i=24;i>=0;i--){
+            idle-=Math.min(work,freq[i]);
+        }
+        return idle < 0? tasks.length : tasks.length + idle;
+    }
+}
+-----------------------------------------------------------------------------------------------------Intution and Code Approachh1 -----------------------------------------------------------------------------
+Base Case Handling:
+If n (the cooling interval) is 0, it means there is no cooling interval required between tasks. In this case, the function simply returns the total number of tasks.
+
+Frequency Calculation:
+The code initializes an array f of size 26 to store the frequency of each task.
+It iterates through the tasks array and increments the frequency of each task in the f array.
+
+Finding the Maximum Frequency and Counting Tasks with Maximum Frequency:
+The code iterates through the frequencies stored in the f array. It finds the maximum frequency (max) among all tasks and counts how many tasks have this maximum frequency (count).
+
+Calculating Minimum Time Required:
+The line return Math.max(tasks.length, (max - 1) * (n + 1) + count); calculates the minimum time required to execute all tasks considering the cooling interval n.
+(max - 1) * (n + 1): This part calculates the time required for all chunks of tasks except the last one.
+(max - 1) represents the number of tasks in each chunk excluding the last one.
+(n + 1) represents the time taken to execute a task along with the cooling interval. n + 1 indicates that after executing a task, there will be n idle intervals before another task can be executed.
+count: This part represents the number of tasks with the maximum frequency. These tasks can be accommodated in the last chunk without requiring extra intervals.
+
+Returning the Result:
+The function returns the maximum of the total number of tasks and the calculated time required for execution. 
+This ensures that if the calculated time is less than the total number of tasks, it returns the total number of tasks to ensure all tasks are executed without any unnecessary idle time. 
+Otherwise, it returns the calculated time, representing the minimum time required to execute all tasks with the given constraints.
+
+-----------------------Code---------------------------
+class Solution {
+         public int leastInterval(char[] tasks, int n) {
+            if (n == 0) {
+                return tasks.length;
+            }
+            int[] f = new int[26];
+            for (char c : tasks) {
+                f[c - 'A']++;
+            }
+            int max = 0;
+            int count = 0;
+            //This loop iterates through the frequencies stored in f array. 
+            //It finds the maximum frequency (max) among all tasks and counts how many 
+            //tasks have this maximum frequency (count).
+            for (int i : f) {
+                if (i > max) {
+                    max = i;
+                    count = 1;
+                } else if (i == max) {
+                    count++;
+                }
+
+            }
+            return Math.max(tasks.length, (max - 1) * (n + 1) + count); 
+        }
+    }
