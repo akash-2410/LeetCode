@@ -1,0 +1,54 @@
+---------------------------------------------------------------------------------------------------Question----------------------------------------------------------------------------------------------------------
+
+You are given two linked lists: list1 and list2 of sizes n and m respectively.
+Remove list1's nodes from the ath node to the bth node, and put list2 in their place.
+The blue edges and nodes in the following figure indicate the result:
+
+Build the result list and return its head.
+---------------------------------------------------------------------------------------------------Example----------------------------------------------------------------------------------------------------------
+Input: list1 = [10,1,13,6,9,5], a = 3, b = 4, list2 = [1000000,1000001,1000002]
+Output: [10,1,13,1000000,1000001,1000002,5]
+Explanation: We remove the nodes 3 and 4 and put the entire list2 in their place. The blue edges and nodes in the above figure indicate the result.
+---------------------------------------------------------------------------------------------------Intution----------------------------------------------------------------------------------------------------------
+Traversal to Find Insertion Points:
+The method starts by traversing list1 until it reaches the node right before index a. This node is stored in front.
+It continues traversing until it reaches the node right after index b. This node is stored in rear.
+At this point, the segment of list1 between indices a and b (inclusive) has been identified.
+
+Connecting the Second List:
+It then identifies the head and tail of list2. This is done by traversing list2 until reaching its last node (secondListTail).
+After identifying the head and tail of list2, it connects front's next pointer to the head of list2, effectively inserting list2 into list1.
+Then, it connects the tail of list2 to rear, effectively completing the merge operation.
+
+Returning the Merged List:
+Finally, it returns list1, which now contains the merged result.
+
+Overall Intuition:
+The method effectively splits list1 into three parts: before index a, between indices a and b, and after index b.
+It then inserts list2 between the "before" and "after" segments of list1, thereby merging the two lists.
+---------------------------------------------------------------------------------------------------Code-------------------------------------------------------------------------------------------------------------
+
+
+class Solution {
+    public ListNode mergeInBetween(ListNode list1, int a, int b, ListNode list2) {
+        ListNode currNode = list1;
+        int index = 0;
+        while (index < a - 1) {
+            currNode = currNode.next;
+            index++;
+        }
+        ListNode front = currNode;
+        while (index < b + 1) {
+            currNode = currNode.next;
+            index++;
+        }
+        ListNode rear = currNode;
+        ListNode secondListTail = list2, secondListHead = list2;
+        while (secondListTail.next != null) {
+            secondListTail = secondListTail.next;
+        }
+        front.next = secondListHead;
+        secondListTail.next = rear;
+        return list1;
+    }
+}
