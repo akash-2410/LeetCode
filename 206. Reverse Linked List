@@ -1,0 +1,37 @@
+------------------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------------------
+Given the head of a singly linked list, reverse the list, and return the reversed list.
+------------------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------------------
+Example 1:
+Input: head = [1,2,3,4,5]
+Output: [5,4,3,2,1]
+
+Example 2:
+Input: head = [1,2]
+Output: [2,1]
+------------------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------------------
+Initialize three pointers: prev, curr, and nextNode.
+Iterate through the linked list.
+Inside the loop, update nextNode to store the next node of curr.
+Update the next pointer of curr to point to prev.
+Move prev to curr, and curr to nextNode.
+Continue iterating until curr becomes NULL.
+Return prev, which is the new head of the reversed list.
+
+Complexity
+Time complexity: ( O(n) ), where ( n ) is the number of nodes in the linked list. We traverse the entire list once.
+Space complexity: ( O(1) ). We are using constant space for pointers prev, curr, and nextNode.
+------------------------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------------------
+class Solution {
+    public ListNode reverseList(ListNode head) {
+      ListNode prev=null;
+      ListNode curr=head;
+      ListNode nextNode=null;
+      while(curr!=null){
+        nextNode = curr.next;
+        curr.next=prev;
+        prev=curr;
+        curr=nextNode;
+      }  
+      return prev;
+    }
+}
