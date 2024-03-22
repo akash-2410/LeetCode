@@ -1,0 +1,52 @@
+------------------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------------------------
+Given the head of a singly linked list, return true if it is a 
+palindrome
+ or false otherwise.
+------------------------------------------------------------------------------------------------Example--------------------------------------------------------------------------------------------------------------
+Example 1:
+Input: head = [1,2,2,1]
+Output: true
+
+Example 2:
+Input: head = [1,2]
+Output: false
+------------------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------------------------
+Instance Variable:
+
+ListNode curr: This variable is an instance variable that keeps track of the current node being processed.
+
+solve method:
+This is a recursive method that checks if the given linked list is a palindrome or not.
+It takes a ListNode parameter head, representing the current node being checked.
+If the head is null, it means we've reached the end of the list, so it returns true.
+It recursively calls itself with head.next until it reaches the end of the list.
+While unwinding the recursion, it checks if the value of the current node (head.val) matches the value of the corresponding node from the other end of the list (curr.val). If they don't match, or if the recursive call returns false, it returns false.
+If the values match, it moves curr to the next node (curr = curr.next) and returns true.
+
+isPalindrome method:
+This method initializes curr to the head of the linked list.
+It then calls the solve method with the head of the linked list.
+It returns the result obtained from the solve method, indicating whether the linked list is a palindrome or not.
+------------------------------------------------------------------------------------------------Code----------------------------------------------------------------------------------------------------------------
+
+class Solution {
+    ListNode curr;
+
+    public boolean solve(ListNode head) {
+        if(head == null)
+            return true;
+
+        if(!solve(head.next) || head.val != curr.val) {
+            return false;
+        }
+
+        curr = curr.next;
+        return true;
+    }
+
+    public boolean isPalindrome(ListNode head) {
+        curr = head;
+
+        return solve(head);
+    }
+}
