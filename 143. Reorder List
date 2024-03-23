@@ -1,0 +1,56 @@
+---------------------------------------------------------------------------------------------Question-----------------------------------------------------------------------------------------------------------------
+You are given the head of a singly linked-list. The list can be represented as:
+L0 → L1 → … → Ln - 1 → Ln
+
+Reorder the list to be on the following form:
+L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
+You may not modify the values in the list's nodes. Only nodes themselves may be changed.
+---------------------------------------------------------------------------------------------Example-----------------------------------------------------------------------------------------------------------------
+Input: head = [1,2,3,4]
+Output: [1,4,2,3]
+---------------------------------------------------------------------------------------------Intution-----------------------------------------------------------------------------------------------------------------
+Base Case: The recursion bottoms out when it reaches the last node of the linked list. At this point, the method reorderList2 returns the head of the list.
+
+Reversing the Order: As the recursion unwinds, it reverses the order of nodes by manipulating the next pointers. For each pair of nodes encountered during the unwinding,
+it swaps their next pointers, effectively reversing the order.
+
+Termination Condition: The termination condition for the recursion occurs when the function encounters either the last node or the second-to-last node. 
+In such cases, it sets the next pointer of the current node to null, effectively terminating further traversal beyond this point.
+
+Reordering the List: At each step of the recursion, the method reorderList2 reorders the list by adjusting the next pointers of nodes. 
+It sets the next of the current node to the next node in the reordered sequence, and the next of the next node to the current node. This effectively "interweaves" the nodes of the list,
+producing the desired reorder.
+
+Main Method: The reorderList method serves as an entry point to initiate the reordering process. It checks if the list has more than one node before invoking the recursive method reorderList2.
+This ensures that the reordering process is executed only when there are nodes to reorder.
+---------------------------------------------------------------------------------------------Code--------------------------------------------------------------------------------------------------------------------
+
+class Solution {
+     public static void reorderList(ListNode head) {
+		if (head.next == null) {
+			return;
+		}
+		reorderList2(head, head.next);
+	}
+
+	public static ListNode reorderList2(ListNode head, ListNode curr) {
+		ListNode temp;
+		if (curr.next != null) {
+			temp = reorderList2(head, curr.next);
+		} else {
+			temp = head;
+		}
+		if(temp == null) {
+			return null;
+		}
+		if (temp == curr  || temp.next == curr) {
+			curr.next=null;
+			return null;
+		}
+
+		curr.next = temp.next;
+		temp.next = curr;
+		return curr.next;
+	}
+        
+}
