@@ -1,0 +1,48 @@
+---------------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------------------------
+Given an integer array nums of length n where all the integers of nums are in the range [1, n] and each integer appears once or twice, return an array of all the integers that appears twice.
+
+You must write an algorithm that runs in O(n) time and uses only constant extra space.
+---------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------------------------
+Example 1:
+Input: nums = [4,3,2,7,8,2,3,1]
+Output: [2,3]
+
+Example 2:
+Input: nums = [1,1,2]
+Output: [1]
+
+Example 3:
+Input: nums = [1]
+Output: []
+---------------------------------------------------------------------------------------------Intution------------------------------------------------------------------------------------------------------------
+Initialization:
+A new ArrayList res is initialized to store the duplicate elements found in the array nums.
+An integer array count is created with a size one more than the length of nums. This array will be used to count the frequency of each number encountered in nums.
+
+Counting Frequencies:
+The code iterates through each element freq in the array nums.
+For each element freq, it increments the count in the count array at the index corresponding to that element's value.
+
+Finding Duplicates:
+After counting frequencies, another loop is used to iterate through numbers from 1 to the length of nums.
+For each number i, it checks if its count in the count array is equal to 2. If so, it means that i is a duplicate, and it adds i to the result list res.
+
+Return Value:
+Finally, the method returns the list res, which contains all the duplicate elements found in the array nums.
+---------------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------------------------
+class Solution {
+    public List<Integer> findDuplicates(int[] nums) {
+     List<Integer> res = new ArrayList<Integer>();
+     int[]count = new int[nums.length+1];
+     for(int freq : nums) 
+            count[freq]++;
+
+     for( int i =1 ; i <= nums.length ; i++)
+    {
+        if(count[i] == 2){
+            res.add(i);
+        }
+     }
+     return res;  
+    }
+}
