@@ -1,0 +1,101 @@
+-----------------------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------------------
+Given an unsorted integer array nums. Return the smallest positive integer that is not present in nums.
+
+You must implement an algorithm that runs in O(n) time and uses O(1) auxiliary space.
+-----------------------------------------------------------------------------------------------------Example------------------------------------------------------------------------------------------------------
+Example 1:
+Input: nums = [1,2,0]
+Output: 3
+Explanation: The numbers in the range [1,2] are all in the array.
+
+Example 2:
+Input: nums = [3,4,-1,1]
+Output: 2
+Explanation: 1 is in the array but 2 is missing.
+
+Example 3:
+Input: nums = [7,8,9,11,12]
+Output: 1
+Explanation: The smallest positive integer 1 is missing.
+-----------------------------------------------------------------------------------------------------Intution-----------------------------------------------------------------------------------------------------
+Initialization:
+The method initializes an integer variable n to store the length of the input array nums.
+It also initializes a boolean variable contains1 to keep track of whether the number 1 is present in the original array.
+
+Pre-processing:
+The code iterates through the elements of the input array nums.
+
+For each element, it performs two checks:
+If the element is less than or equal to 0, or if it exceeds the length of the array nums, it replaces that element with 1. 
+This step ensures that all elements in nums are positive integers and within the range of 1 to n.
+It also checks whether the number 1 is present in the original array. If it finds a 1, it sets contains1 to true.
+
+Marking Presence:
+After pre-processing, another loop is used to mark the presence of integers from 1 to n in the array nums.
+It iterates through each element in nums, takes its absolute value, and uses it as an index in nums. It then flips the sign of the number at that index to indicate the presence of the corresponding integer.
+
+Finding the First Missing Positive:
+Once all integers from 1 to n are marked in nums, another loop is used to find the smallest missing positive integer.
+It iterates through nums and returns the index plus 1 for the first positive number encountered. This represents the smallest missing positive integer.
+If no positive integer is found in nums, it returns n + 1, indicating that all integers from 1 to n are present, and the smallest missing positive integer is n + 1.
+-----------------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------------
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        boolean contains1 = false;
+
+        for (int i = 0; i < n; i++) {
+            // Check whether 1 is in the original array
+            if (nums[i] == 1) {
+                contains1 = true;
+            }
+            if (nums[i] <= 0 || nums[i] > n) {
+                nums[i] = 1;
+            }
+        }
+
+        if (!contains1) return 1;
+
+        // Mark whether integers 1 to n are in nums
+        // Use index as a hash key and negative sign as a presence detector.
+        for (int i = 0; i < n; i++) {
+            int val = Math.abs(nums[i]);
+            int idx = val - 1;
+
+            if (nums[idx] < 0) continue;
+            nums[idx] *= -1;
+        }
+
+        // First positive in nums is smallest missing positive integer
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > 0)
+                return i + 1;
+        }
+
+        return n + 1;
+    }
+}
+
+TC:O(n);
+SC:O(1);
+----------------------------------------------------------------------------------------------------Approch 2-------------------------------------------------------------------------------------------------------
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        boolean[] found = new boolean[n+1];
+        for(int i = 0;i< n; i++){
+            if (nums[i]>0 && nums[i]<= n){
+                found[nums[i]]=true;
+
+            }
+        }
+        for(int i= 1;i<=n;i++){
+            if(!found[i]){
+                return i;
+            }
+        }
+        return n+1;
+ }
+
+TC:O(n);
+SC:O(n);
