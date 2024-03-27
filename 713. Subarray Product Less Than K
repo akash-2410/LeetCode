@@ -1,0 +1,61 @@
+-------------------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------------------------
+Given an array of integers nums and an integer k, return the number of contiguous subarrays where the product of all the elements in the subarray is strictly less than k.
+-------------------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------------------------
+Example 1:
+Input: nums = [10,5,2,6], k = 100
+Output: 8
+Explanation: The 8 subarrays that have product less than 100 are:
+[10], [5], [2], [6], [10, 5], [5, 2], [2, 6], [5, 2, 6]
+Note that [10, 5, 2] is not included as the product of 100 is not strictly less than k.
+
+Example 2:
+Input: nums = [1,2,3], k = 0
+Output: 0
+-------------------------------------------------------------------------------------------------Intution-------------------------------------------------------------------------------------------------------------
+Initialization:
+The method takes an integer array nums and an integer k as input parameters.
+It initializes a variable count to keep track of the number of subarrays satisfying the condition.
+It sets up two pointers left and right initially pointing to the start of the array.
+It initializes a variable prod to store the product of elements within the subarray.
+
+Sliding Window Approach:
+The code utilizes a sliding window approach to iterate through the array and count subarrays meeting the criteria.
+It starts with the right pointer (right) and continuously expands it to the right until the product of elements within the window exceeds or equals k.
+When the product exceeds k, it starts contracting the window from the left end (left) until the product is less than k.
+At each step, it updates the count by adding the number of valid subarrays formed by the current window size, which is (right - left) + 1.
+
+Counting Subarrays:
+The count is updated at each iteration by the number of subarrays ending at the current right pointer position. This count is calculated as (right - left) + 1.
+This logic is based on the fact that each subarray ending at right position contributes (right - left) + 1 new subarrays, which can be formed by extending the existing valid subarrays up to right position.
+
+Return Value:
+After iterating through the entire array, the method returns the final count, representing the total number of contiguous subarrays where the product of elements is less than k.
+-------------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------------------
+
+public class Solution {
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        if (k <= 1)
+            return 0;
+        
+        int n = nums.length;
+        int count = 0;
+        
+        int left = 0;
+        int right = 0;
+        int prod = 1;
+        
+        while (right < n) {
+            prod *= nums[right];
+            
+            while (prod >= k) {
+                prod /= nums[left];
+                left++;
+            }
+            
+            count += (right - left) + 1;
+            right++;
+        }
+        
+        return count;
+    }
+}
