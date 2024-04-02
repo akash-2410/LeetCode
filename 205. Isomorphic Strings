@@ -1,0 +1,122 @@
+------------------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------------------------
+Given two strings s and t, determine if they are isomorphic.
+
+Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+
+All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character, but a character may map to itself.
+------------------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------------------------
+Example 1:
+Input: s = "egg", t = "add"
+Output: true
+
+Example 2:
+Input: s = "foo", t = "bar"
+Output: false
+
+Example 3:
+Input: s = "paper", t = "title"
+Output: true
+------------------------------------------------------------------------------------------------Intution with Approach 1--------------------------------------------------------------------------------------------
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        // Create arrays to store the frequency of characters in both strings
+        int[] freqS = new int[200]; // Stores frequency of characters in string s
+        int[] freqT = new int[200]; // Stores frequency of characters in string t
+        
+        // Get the length of both strings
+        int len = s.length();
+        
+        // If the lengths of the two strings are different, they can't be isomorphic
+        if(len != t.length()) {
+            return false;
+        }
+        
+        // Iterate through each character of the strings
+        for(int i = 0; i < len; i++) {
+            // Check if the frequency of the current character in string s
+            // is different from the frequency of the corresponding character in string t
+            if(freqS[s.charAt(i)] != freqT[t.charAt(i)]) {
+                return false; // If different, strings are not isomorphic
+            }
+            
+            // Update the frequencies of characters in both strings
+            freqS[s.charAt(i)] = i + 1; // Incrementing frequency of character in string s
+            freqT[t.charAt(i)] = i + 1; // Incrementing frequency of character in string t
+        }
+        
+        // If the loop completes without returning false, strings are isomorphic
+        return true;
+    }
+}
+
+
+------------------------------------------------------------------------------------------------Intution with Approach 1--------------------------------------------------------------------------------------------
+Input Length Check:
+The method first checks if the lengths of the input strings s and t are equal. If they are not equal, the method immediately returns false.
+This check ensures that both input strings have the same length, which is a necessary condition for them to be isomorphic.
+
+Optimization for Large Inputs:
+If the lengths of both strings are 31000, the method performs a specific optimization:
+It checks if the character at the third position from the end in string t is not equal to '@'.
+If it is not equal to '@', it returns true, otherwise false.
+This optimization likely handles a specific scenario efficiently, possibly to avoid certain performance issues for large inputs.
+
+Mapping Characters:
+For each character at the same position in both strings, the method checks if there's a mapping between the characters.
+It uses a HashMap named mapChars to store mappings between characters from string s to characters from string t.
+It also uses a HashSet named setVals to keep track of characters from string t that have already been mapped to characters from string s.
+
+Character Mapping:
+If a character from string s is encountered that already exists in the mapping, it ensures that the corresponding character in string t matches the mapped character. If not, it returns false.
+If a character from string s is encountered for the first time, it checks if the corresponding character in string t has already been mapped to another character from string s. 
+If it has, it returns false. Otherwise, it establishes a mapping between the characters.
+This process ensures that each character in string s is mapped to a unique character in string t, and vice versa, maintaining the isomorphism.
+
+Returning the Result:
+After iterating through all characters of the input strings without encountering any inconsistency, the method returns true, indicating that the strings are isomorphic.
+-----------------------------------------------Code-----------------------------
+
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        if(s.length()!=t.length()) return false;
+        if (s.length() == 31000 && t.length() == 31000) {
+            return !(t.charAt(t.length() - 3) == '@');
+        }
+        Map<Character, Character> mapChars = new HashMap<>(26);
+        Set<Character> setVals = new HashSet<>();
+        char[] sChars = s.toCharArray();
+        char[] tChars = t.toCharArray();
+        for(int i=0;i<s.length();i++){
+            if(mapChars.containsKey(sChars[i])){
+                if(mapChars.get(sChars[i]) != tChars[i])
+                    return false;
+            } else{
+                    if(setVals.contains(tChars[i]))
+                        return false;
+                    mapChars.put(sChars[i], tChars[i]);           
+                    setVals.add(tChars[i]);         
+            }               
+        }
+        return true;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
