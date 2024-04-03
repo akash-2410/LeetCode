@@ -1,0 +1,75 @@
+------------------------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------------------
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+------------------------------------------------------------------------------------------------------Example--------------------------------------------------------------------------------------------------------
+Example 1:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+Output: true
+
+Example 2:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"
+Output: true
+
+Example 3:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
+Output: false
+------------------------------------------------------------------------------------------------------Intution with Code-------------------------------------------------------------------------------------------
+
+class Solution {
+    // Variables to store the length of word and dimensions of the board
+    int l, m, n;
+    // Directions to explore adjacent cells: right, left, down, up
+    int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+    // Recursive function to search for the word starting from (i, j) position
+    boolean find(char[][] board, int i, int j, String word, int idx) {
+        // If we have found all characters of the word
+        if (idx >= l)
+            return true;
+
+        // If we are out of bounds or the current character doesn't match with the one in the word
+        if (i < 0 || i >= m || j < 0 || j >= n || board[i][j] != word.charAt(idx))
+            return false;
+
+        // Store the current character and mark it as visited
+        char temp = board[i][j];
+        board[i][j] = '$';
+
+        // Explore adjacent cells
+        for (int[] dir : directions) {
+            int i_ = i + dir[0];
+            int j_ = j + dir[1];
+
+            // Recur for adjacent cell with the next character in the word
+            if (find(board, i_, j_, word, idx + 1))
+                return true;
+        }
+
+        // Restore the original character after exploration
+        board[i][j] = temp;
+        return false;
+    }
+
+    // Main function to check if the given word exists in the board
+    boolean exist(char[][] board, String word) {
+        // Get the dimensions of the board and length of the word
+        m = board.length;
+        n = board[0].length;
+        l = word.length();
+        // If the total number of cells is less than the length of the word, word can't exist
+        if (m * n < l)
+            return false;
+
+        // Iterate through each cell of the board
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // If the first character of the word matches, start searching from this cell
+                if (board[i][j] == word.charAt(0) && find(board, i, j, word, 0)) {
+                    return true; // If word is found, return true
+                }
+            }
+        }
+
+        return false; // Word not found in the board
+    }
+}
