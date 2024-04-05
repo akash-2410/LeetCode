@@ -1,0 +1,68 @@
+---------------------------------------------------------------------------------------------------Question-----------------------------------------------------------------------------------------------------------
+Given a string s of lower and upper case English letters.
+A good string is a string which doesn't have two adjacent characters s[i] and s[i + 1] where:
+0 <= i <= s.length - 2
+s[i] is a lower-case letter and s[i + 1] is the same letter but in upper-case or vice-versa.
+To make the string good, you can choose two adjacent characters that make the string bad and remove them. You can keep doing this until the string becomes good.
+Return the string after making it good. The answer is guaranteed to be unique under the given constraints.
+Notice that an empty string is also good.
+---------------------------------------------------------------------------------------------------Example-----------------------------------------------------------------------------------------------------------
+Example 1:
+Input: s = "leEeetcode"
+Output: "leetcode"
+Explanation: In the first step, either you choose i = 1 or i = 2, both will result "leEeetcode" to be reduced to "leetcode".
+
+Example 2:
+Input: s = "abBAcC"
+Output: ""
+Explanation: We have many possible scenarios, and all lead to the same answer. For example:
+"abBAcC" --> "aAcC" --> "cC" --> ""
+"abBAcC" --> "abBA" --> "aA" --> ""
+
+Example 3:
+Input: s = "s"
+Output: "s"
+---------------------------------------------------------------------------------------------------Intution-----------------------------------------------------------------------------------------------------------
+1. Prepare for Modification:
+We'll start by setting up a tracker, endPosition, to indicate the end position of the modified string.
+Convert the input string s into an array of characters charArray. Think of charArray as a board where we'll put characters after checking them.
+
+2. Iterate through the String:
+Now, we'll go through each character in the original string s.
+For each character, we'll check if it can be removed.
+If the character can be removed, it means it's adjacent to another character with the same letter but different cases.
+To check this, we'll compare the current character with the character at endPosition - 1. If they are the same letter but different cases, we'll remove them.
+If they can't be removed, we'll keep the current character by placing it in the charArray at endPosition and then move endPosition to the next position.
+
+3. Return the Modified String:
+Finally, we'll convert the modified charArray back to a string, keeping only the valid portion up to endPosition.
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+---------------------------------------------------------------------------------------------------Code------------------------------------------------------------------------------------------------------------
+class Solution {
+    public String makeGood(String s) {
+        int endpos = 0; // Represents the end position of the modified string
+        char[] sarray=s.toCharArray();
+        
+        // Loop through each character in the string
+        for(int currpos=0; currpos<s.length();currpos++){
+ 
+            // it's checking if the two characters are the same letter, 
+            //but with one being uppercase and the other being lowercase. 
+            //This is because in ASCII encoding, the difference between the uppercase and lowercase 
+            //versions of any letter is always 32.
+            if(endpos>0 && Math.abs(sarray[currpos]-sarray[endpos - 1])==32){
+                endpos--; // Decrement the end position if the current character can be removed
+            }else{
+                // Otherwise, keep the current character and increment the end position
+                sarray[endpos]=sarray[currpos];
+                endpos++;
+            }
+        }
+        //Convert the modified character array to a string and return only the valid portion
+            return new String(sarray).substring(0,endpos);
+    }
+}
