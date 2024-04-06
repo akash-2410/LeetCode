@@ -1,0 +1,135 @@
+--------------------------------------------------------------------------------------------------Question------------------------------------------------------------------------------------------------------------
+Given a string s of '(' , ')' and lowercase English characters.
+Your task is to remove the minimum number of parentheses ( '(' or ')', in any positions ) so that the resulting parentheses string is valid and return any valid string.
+Formally, a parentheses string is valid if and only if:
+It is the empty string, contains only lowercase characters, or
+It can be written as AB (A concatenated with B), where A and B are valid strings, or
+It can be written as (A), where A is a valid string.
+--------------------------------------------------------------------------------------------------Example------------------------------------------------------------------------------------------------------------
+Example 1:
+Input: s = "lee(t(c)o)de)"
+Output: "lee(t(c)o)de"
+Explanation: "lee(t(co)de)" , "lee(t(c)ode)" would also be accepted.
+
+Example 2:
+Input: s = "a)b(c)d"
+Output: "ab(c)d"
+
+Example 3:
+Input: s = "))(("
+Output: ""
+Explanation: An empty string is also valid.
+--------------------------------------------------------------------------------------------------Intution and Code 1------------------------------------------------------------------------------------------------------------
+Initialization:
+Initialize start and end strings to store the parts of the string that don't need to be removed.
+Define variables f and l to keep track of the first and last indices of the string s.
+Convert the input string s into a character array arr.
+Initialize a variable open to count the number of open parentheses encountered.
+
+First Pass:
+Iterate through the character array arr from left to right.
+Count the number of open parentheses encountered.
+If encountering a closing parenthesis without a corresponding open parenthesis, mark it for removal by replacing it with '*'.
+
+Second Pass:
+Iterate through the character array arr from right to left.
+If there are unmatched open parentheses left, mark them for removal by replacing them with '*'.
+
+Reconstruct Valid String:
+Reconstruct the valid string by copying characters from arr to the same array, excluding the marked characters ('*').
+Update the pointer p to keep track of the valid characters.
+
+Return Result:
+Convert the modified character array to a string and return the substring up to index p.
+
+------------------------------------------Code-------------------------------------------
+class Solution {
+    public String minRemoveToMakeValid(String s) {
+        int f = 0;
+        int l = s.length() - 1;
+
+        String start = "", end = "", result;
+        
+        char[] arr = s.toCharArray();
+        int open = 0;
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == '(')
+                open++;
+            else if (arr[i] == ')') {
+                if (open == 0)
+                    arr[i] = '*';
+                else
+                    open--;
+            }
+        }
+        for (int i = arr.length - 1; i >= 0; i--) {
+            if (open > 0 && arr[i] == '(') {
+                arr[i] = '*';
+                open--;
+            }
+        }
+        int p = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != '*')
+                arr[p++] = arr[i];
+        }
+
+        return new String(arr).substring(0, p);
+    }   
+}
+--------------------------------------------------------------------------------------------------Intution and Code 2------------------------------------------------------------------------------------------------------------
+Initialization:
+Initialize a HashSet toRemove to store indices of parentheses that need to be removed.
+Initialize a Stack st to keep track of the indices of open parentheses encountered.
+
+Iterating Through the String:
+Iterate through the characters of the input string s.
+If an open parenthesis '(' is encountered, push its index onto the stack.
+If a closing parenthesis ')' is encountered:
+If the stack is empty, meaning there's no corresponding open parenthesis, mark this closing parenthesis for removal.
+Otherwise, pop the index of the corresponding open parenthesis from the stack.
+
+Processing Remaining Open Parentheses:
+After iterating through the string, if there are remaining open parentheses in the stack, mark them for removal.
+
+Building the Result String:
+Construct the result string by iterating through the characters of the input string again.
+If an index is not in the toRemove set, append the corresponding character to the result string.
+
+Return Result:
+Convert the StringBuilder result to a string and return it.
+
+------------------------------------------Code-------------------------------------------
+class Solution {
+    public String minRemoveToMakeValid(String s) {
+        int n = s.length();
+        
+        HashSet<Integer> toRemove = new HashSet<>();
+        Stack<Integer> st = new Stack<>();
+        
+        for(int i = 0; i < n; i++) {
+            char ch = s.charAt(i);
+            if(ch == '(') 
+                st.push(i);
+            else if(ch == ')') {
+                if(st.isEmpty()) 
+                    toRemove.add(i);
+                else 
+                    st.pop();
+            }
+        }
+        
+        while(!st.isEmpty()) 
+            toRemove.add(st.pop());
+        
+        StringBuilder result = new StringBuilder();
+        
+        for(int i = 0; i < n; i++) {
+            if(!toRemove.contains(i))
+                result.append(s.charAt(i));
+        }
+        
+        return result.toString();
+    }
+}
