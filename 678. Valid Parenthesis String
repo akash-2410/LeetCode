@@ -1,0 +1,43 @@
+-----------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------------
+Given a string s containing only three types of characters: '(', ')' and '*', return true if s is valid.
+The following rules define a valid string:
+Any left parenthesis '(' must have a corresponding right parenthesis ')'.
+Any right parenthesis ')' must have a corresponding left parenthesis '('.
+Left parenthesis '(' must go before the corresponding right parenthesis ')'.
+'*' could be treated as a single right parenthesis ')' or a single left parenthesis '(' or an empty string "".
+-----------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------------
+Example 1:
+Input: s = "()"
+Output: true
+
+Example 2:
+Input: s = "(*)"
+Output: true
+
+Example 3:
+Input: s = "(*))"
+Output: true
+-----------------------------------------------------------------------------------------Intution-------------------------------------------------------------------------------------------------
+class Solution {
+    public boolean checkValidString(String str) {
+        // Initialize counters for the range of possible open parentheses
+        int minOpen = 0; // Minimum possible count of open parentheses
+        int maxOpen = 0; // Maximum possible count of open parentheses
+        
+        // Loop through each character in the string
+        for (char ch : str.toCharArray()) {
+            // Update the counts based on the current character
+            minOpen += (ch == '(') ? 1 : -1; // Increment minOpen if '(' else decrement
+            maxOpen += (ch != ')') ? 1 : -1; // Increment maxOpen if not ')' else decrement
+            
+            // If the count of high is negative at any point, it's invalid, so return false
+            if (maxOpen < 0) return false;
+            
+            // Ensure minOpen never goes below 0
+            minOpen = Math.max(minOpen, 0);
+        }
+        
+        // If after processing the string, minOpen is 0, then the string is valid
+        return minOpen == 0;
+    }
+}
