@@ -1,0 +1,77 @@
+---------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------------
+You are given an integer array deck. There is a deck of cards where every card has a unique integer. The integer on the ith card is deck[i].
+You can order the deck in any order you want. Initially, all the cards start face down (unrevealed) in one deck.
+You will do the following steps repeatedly until all cards are revealed:
+Take the top card of the deck, reveal it, and take it out of the deck.
+If there are still cards in the deck then put the next top card of the deck at the bottom of the deck.
+If there are still unrevealed cards, go back to step 1. Otherwise, stop.
+Return an ordering of the deck that would reveal the cards in increasing order.
+Note that the first entry in the answer is considered to be the top of the deck.
+---------------------------------------------------------------------------------------Example--------------------------------------------------------------------------------------------------
+Example 1:
+Input: deck = [17,13,11,2,3,5,7]
+Output: [2,13,3,11,5,17,7]
+Explanation: 
+We get the deck in the order [17,13,11,2,3,5,7] (this order does not matter), and reorder it.
+After reordering, the deck starts as [2,13,3,11,5,17,7], where 2 is the top of the deck.
+We reveal 2, and move 13 to the bottom.  The deck is now [3,11,5,17,7,13].
+We reveal 3, and move 11 to the bottom.  The deck is now [5,17,7,13,11].
+We reveal 5, and move 17 to the bottom.  The deck is now [7,13,11,17].
+We reveal 7, and move 13 to the bottom.  The deck is now [11,17,13].
+We reveal 11, and move 17 to the bottom.  The deck is now [13,17].
+We reveal 13, and move 17 to the bottom.  The deck is now [17].
+We reveal 17.
+Since all the cards revealed are in increasing order, the answer is correct.
+---------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------------
+Approach
+Sort the given deck array in ascending order.
+Create a result array of the same length as the deck.
+Implement a recursive function everyOther to simulate the process of revealing cards.
+In the everyOther function, iterate through the result array and fill it with cards from the sorted deck, taking every other card and skipping the rest.
+Repeat the process until all cards are revealed.
+
+Complexity
+Time complexity: O(Nlog⁡N)O(N \log N)O(NlogN) due to sorting, where N is the number of cards in the deck.
+Space complexity: O(N)O(N)O(N) for the result array and recursive stack space.
+---------------------------------------------------------------------------------------Codeeee--------------------------------------------------------------------------------------------------
+public class Solution {
+    public int[] deckRevealedIncreasing(int[] deck) {
+        int N = deck.length;
+        int[] result = new int[N]; // Create an array to store the result, initially filled with 0s
+
+        Arrays.sort(deck); // Sort the input deck in increasing order
+
+        // Call the recursive helper function to populate the result array
+        // Start with indexInDeck = 0, indexInResult = 0, and skip = false
+        return everyOther(deck, result, 0, 0, false);
+    }
+
+    // Recursive helper function to populate the result array every other element
+    private int[] everyOther(int[] deck, int[] result, int indexInDeck, int indexInResult, boolean skip) {
+        int N = deck.length;
+
+        // If we have processed all elements in the deck, return the result
+        if (indexInDeck == N) {
+            return result;
+        }
+
+        // Iterate through the result array
+        while (indexInResult < N) {
+            // If the current position in result is empty (contains 0)
+            if (result[indexInResult] == 0) {
+                // If skip is false, place the next element from deck into this position
+                if (!skip) {
+                    result[indexInResult] = deck[indexInDeck];
+                    indexInDeck++; // Move to the next element in deck
+                }
+                skip = !skip; // Toggle the skip flag
+            }
+            indexInResult++; // Move to the next position in result
+        }
+
+        // Call the function recursively with updated parameters
+        return everyOther(deck, result, indexInDeck, 0, skip);
+    }
+}
+
+
