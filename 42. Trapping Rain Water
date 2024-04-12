@@ -1,0 +1,70 @@
+--------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+--------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2018/10/22/rainwatertrap.png
+Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
+Output: 6
+Explanation: The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped.
+
+Example 2:
+Input: height = [4,2,0,3,2,5]
+Output: 9
+
+--------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------
+Initialization:
+int n = height.length;: Determines the size of the array height[].
+int[] left = new int[n]; and int[] right = new int[n];: Initialize two arrays to store the maximum height of bars to the left and right of each position, respectively.
+int waterTrapped = 0;: Initialize a variable to keep track of the total amount of trapped water.
+
+Populating the left[] Array:
+left[0] = height[0];: The maximum height of the leftmost bar is initialized to the height of the first bar.
+for(int i = 1; i < n; i++) { left[i] = Math.max(left[i - 1], height[i]); }: Traverse through the array from left to right. For each position i, 
+left[i] is updated to store the maximum height of bars from the left up to position i.
+
+Populating the right[] Array:
+right[n - 1] = height[n - 1];: The maximum height of the rightmost bar is initialized to the height of the last bar.
+for(int i = n - 2; i >= 0; i--) { right[i] = Math.max(right[i + 1], height[i]); }: Traverse through the array from right to left. For each position i, 
+right[i] is updated to store the maximum height of bars from the right up to position i.
+
+Calculating Trapped Water:
+for(int i = 0; i < n; i++) { int minHeight = Math.min(left[i], right[i]); waterTrapped += minHeight - height[i]; }: Traverse through the array. 
+For each position i, calculate the minimum height of the tallest bars on the left and right sides (minHeight).
+Then, subtract the height of the current bar (height[i]) from minHeight to get the amount of water that can be trapped above the current bar. Add this amount to waterTrapped.
+
+Return the Result:
+return waterTrapped;: Return the total amount of trapped water.
+--------------------------------------------------------------------------------------------Code------------------------------------------------------------------------------------------------
+class Solution {
+    public int trap(int[] height) {
+        // Initialize Variables and Arrays
+        int n =height.length;
+        int []left = new int[n];
+        int []right = new int[n];
+        int watertrapped = 0;
+ 
+          //Step 2: Populate the left[] Array
+        left[0] = height[0];
+        for(int i = 1;i<n;i++){
+            left[i] =Math.max(left[i-1],height[i]);
+        }
+      
+
+     // Step 3: Populate the right[] Array
+        right[n-1] = height[n-1];
+        for(int i = n-2;i>=0;i--){
+            right[i] =Math.max(right[i+1],height[i]);
+        }
+       
+       //Step 4: Calculate Trapped Water
+        for(int i = 0;i<n;i++){
+            int minHeight = Math.min(left[i],right[i]);
+            watertrapped += minHeight - height[i];
+        }
+
+        //Step 5: Return the Result
+        return watertrapped;
+        
+    }
+}
+
