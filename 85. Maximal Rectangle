@@ -1,0 +1,125 @@
+---------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------
+Given a rows x cols binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+---------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2020/09/14/maximal.jpg
+Input: matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
+Output: 6
+Explanation: The maximal rectangle is shown in the above picture.
+
+Example 2:
+Input: matrix = [["0"]]
+Output: 0
+
+Example 3:
+Input: matrix = [["1"]]
+Output: 1
+---------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------
+Next Smaller to Right (NSR) and Next Smaller to Left (NSL) Functions:
+These functions are designed to find the nearest smaller element's index to the right and left of each element in the heights array, respectively.
+They utilize a stack-based approach, which is a common technique for solving problems involving finding nearest elements in an array.
+The pseudocode logic followed in both functions is similar:
+Initialize an empty stack to store indices of elements.
+Iterate through the array from one direction (right to left for NSR, left to right for NSL).
+For each element, while the stack is not empty and the current element is smaller than the element at the top of the stack, pop elements from the stack.
+If the stack becomes empty, assign a pseudo-index (an index that doesn't exist in the array) to represent that there's no smaller element in that direction.
+Otherwise, assign the index at the top of the stack, as it represents the nearest smaller element.
+Push the current index onto the stack.
+This process effectively determines the index of the next smaller element to the right and left for each element in the array.
+
+Maximum Area Histogram (MAH) Function:
+This function computes the maximum area of a rectangle within a histogram represented by the heights array.
+It utilizes the NSR and NSL functions to determine the width of each histogram bar.
+The basic idea behind this function is to consider each bar in the histogram as the potential height of a rectangle and calculate its width by finding the nearest smaller elements on both sides.
+After obtaining the width and height of each rectangle, it computes the area and keeps track of the maximum area encountered.
+The final result is the maximum area of a rectangle that can be formed within the given histogram.
+
+maximalRectangle Function:
+This function takes a binary matrix as input and computes the maximal rectangle area within it.
+It initializes an array height representing the heights of each column in the first row of the matrix.
+Then, it iterates through each row of the matrix and updates the height array based on the current row.
+After updating the height array, it recalculates the maximal area using the MAH function, considering the updated histogram.
+By iterating through each row and updating the histogram accordingly, the function effectively finds the maximal rectangle area within the binary matrix.
+---------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------
+class Solution {
+    public int[] NSR(int[] heights) {
+        Stack<Integer> st = new Stack<>();
+        int n = heights.length;
+        int pseudo_index = n;
+        int[] right = new int[n];
+        for (int i = n - 1; i >= 0; i--) {
+            if (st.empty()) {
+                right[i] = pseudo_index;
+            } else {
+                while (!st.empty() && heights[st.peek()] >= heights[i])
+                    st.pop();
+                if (st.empty())
+                    right[i] = pseudo_index;
+                else
+                    right[i] = st.peek();
+            }
+            st.push(i);
+        }
+        return right;
+    }
+
+    public int[] NSL(int[] heights) {
+        Stack<Integer> st = new Stack<>();
+        int n = heights.length;
+        int pseudo_index = -1;
+        int[] left = new int[n];
+        for (int i = 0; i < n; i++) {
+            if (st.empty()) {
+                left[i] = pseudo_index;
+            } else {
+                while (!st.empty() && heights[st.peek()] >= heights[i])
+                    st.pop();
+                if (st.empty())
+                    left[i] = pseudo_index;
+                else
+                    left[i] = st.peek();
+            }
+            st.push(i);
+        }
+        return left;
+    }
+
+    public int MAH(int[] heights) {
+        int n = heights.length;
+        int[] right = NSR(heights);
+        int[] left = NSL(heights);
+        int[] width = new int[n];
+        for (int i = 0; i < n; i++)
+            width[i] = right[i] - left[i] - 1;
+        int max_area = 0;
+
+        for (int i = 0; i < n; i++) {
+            int a = width[i] * heights[i];
+            if (max_area < a)
+                max_area = a;
+        }
+        return max_area;
+    }
+
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix.length == 0)
+            return 0;
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int[] height = new int[m];
+        for (int i = 0; i < m; i++) {
+            height[i] = (matrix[0][i] == '1') ? 1 : 0;
+        }
+        int maxA = MAH(height);
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (matrix[i][j] == '0')
+                    height[j] = 0;
+                else
+                    height[j] += 1;
+            }
+            maxA = Math.max(maxA, MAH(height));
+        }
+        return maxA;
+    }
+}
