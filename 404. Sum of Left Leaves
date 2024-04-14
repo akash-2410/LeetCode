@@ -1,0 +1,54 @@
+-------------------------------------------------------------------------------------------Question----------------------------------------------------------------------------------------------
+Given the root of a binary tree, return the sum of all left leaves.
+A leaf is a node with no children. A left leaf is a leaf that is the left child of another node.
+-------------------------------------------------------------------------------------------Example----------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2021/04/08/leftsum-tree.jpg
+Input: root = [3,9,20,null,null,15,7]
+Output: 24
+Explanation: There are two left leaves in the binary tree, with values 9 and 15 respectively.
+
+Example 2:
+Input: root = [1]
+Output: 0
+-------------------------------------------------------------------------------------------Intution----------------------------------------------------------------------------------------------
+DFS Traversal:
+We'll use a recursive DFS approach to traverse the binary tree.
+Start by defining a recursive function dfs(node, isLeft), where node represents the current node being processed and isLeft indicates whether the current node is a left child of its parent.
+
+Base Case:
+If the node is None (i.e., we've reached a leaf beyond the tree), return 0.
+
+Leaf Node Check:
+Check if the current node is a leaf node (i.e., it has no left or right child).
+If it's a leaf node and is a left child (isLeft is True), return its value (node.val) as it's a left leaf. If not a left leaf (isLeft is False), return 0.
+
+Recursive Calls:
+If the current node is not a leaf node, recursively calculate the sum of left leaves for its left and right children.
+For the left child (node.left), call dfs(node.left, True) to indicate that it's a left child.
+For the right child (node.right), call dfs(node.right, False) as it's not a left child.
+
+Sum Calculation:
+In the dfs function, sum up the results of left leaves (leftSum) and right nodes (rightSum) obtained from the recursive calls.
+The final result for the current node will be leftSum + rightSum.
+
+Initial Call:
+Start the traversal by calling dfs(root, False), where root is the root of the binary tree and False indicates that the root is not a left child.
+-------------------------------------------------------------------------------------------Code------------------------------------------------------------------------------------------------
+class Solution {
+    public int sumOfLeftLeaves(TreeNode root) {
+        return dfs(root, false);
+    }
+    
+    private int dfs(TreeNode node, boolean isLeft) {
+        if (node == null) {
+            return 0;
+        }
+        if (node.left == null && node.right == null) { // Leaf node
+            return isLeft ? node.val : 0;
+        }
+        int leftSum = dfs(node.left, true);   // Traverse left child
+        int rightSum = dfs(node.right, false); // Traverse right child
+        return leftSum + rightSum;
+    }
+}
