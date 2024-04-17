@@ -1,0 +1,63 @@
+---------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------
+You are given the root of a binary tree where each node has a value in the range [0, 25] representing the letters 'a' to 'z'.
+
+Return the lexicographically smallest string that starts at a leaf of this tree and ends at the root.
+
+As a reminder, any shorter prefix of a string is lexicographically smaller.
+
+For example, "ab" is lexicographically smaller than "aba".
+A leaf of a node is a node that has no children.
+---------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2019/01/30/tree1.png
+Input: root = [0,1,2,3,4,3,4]
+Output: "dba"
+
+Example 2:
+https://assets.leetcode.com/uploads/2019/01/30/tree2.png
+Input: root = [25,1,3,1,3,0,2]
+Output: "adz"
+
+---------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------
+The traversal method is a recursive function that performs a depth-first traversal of the binary tree. It takes two parameters: the current TreeNode being visited (root) and a StringBuilder (sb) to build the string representing the path from the leaf to the root.
+
+If the root is null, the method returns immediately.
+
+The value of the current node is appended to the beginning of the StringBuilder as a lowercase character ('a' + root.val), representing the path from the leaf to the root.
+
+If the current node is a leaf node (i.e., it has no left or right children), the string representation of the path in sb is compared with the current result (res). If res is empty, it's assigned the current path. Otherwise, the lexicographically smaller of the two strings is assigned to res.
+
+The traversal method is called recursively for the left and right children of the current node.
+
+After processing the left and right subtrees, the first character (representing the current node) is removed from the StringBuilder to backtrack and explore other paths.
+
+Finally, the smallestFromLeaf method is called with the root of the binary tree. It initializes an empty StringBuilder and calls the traversal method to find the lexicographically smallest string representing the path from a leaf to the root.
+
+The method returns the resulting res, which contains the lexicographically smallest path from a leaf to the root.
+
+---------------------------------------------------------------------------------------------Code------------------------------------------------------------------------------------------------
+class Solution {
+ String res="";
+    public void traversal(TreeNode root,StringBuilder sb){
+        if(root==null){
+            return;
+        }
+        sb.insert(0,(char)(root.val+97));
+        if(root.left==null&&root.right==null){
+            if(res.equals("")){
+                res=sb.toString();
+            }
+            else{
+                res=res.compareTo(sb.toString())>0?sb.toString():res;
+            }
+        }
+        traversal(root.left,sb);
+        traversal(root.right,sb);
+        sb.deleteCharAt(0);
+    }
+    public String smallestFromLeaf(TreeNode root) {
+        traversal(root,new StringBuilder());
+        //return leafToRoot.poll();
+        return res;
+    }
+}
