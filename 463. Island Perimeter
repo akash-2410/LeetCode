@@ -1,0 +1,48 @@
+--------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------------
+You are given row x col grid representing a map where grid[i][j] = 1 represents land and grid[i][j] = 0 represents water.
+
+Grid cells are connected horizontally/vertically (not diagonally). The grid is completely surrounded by water, and there is exactly one island (i.e., one or more connected land cells).
+
+The island doesn't have "lakes", meaning the water inside isn't connected to the water around the island. One cell is a square with side length 1. The grid is rectangular, 
+width and height don't exceed 100. Determine the perimeter of the island.
+--------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------------
+Example 1:
+Input: grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+Output: 16
+Explanation: The perimeter is the 16 yellow stripes in the image above.
+
+Example 2:
+Input: grid = [[1]]
+Output: 4
+
+Example 3:
+Input: grid = [[1,0]]
+Output: 4
+--------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------------
+Initialization: The function initializes two variables: islands to count the number of islands and neighbors to count the number of neighboring land cells for the islands.
+Nested Loop: It iterates through each cell of the 2D grid using nested for loops.
+Counting Islands and Neighbors: For each cell in the grid, if the cell contains land (value 1), it increments the islands count. 
+Additionally, it checks the neighboring cells to the left and above (if they exist) to determine if there's a neighboring land cell. 
+If a neighboring cell contains land, it increments the neighbors count.
+Perimeter Calculation: The perimeter of each island is calculated as 4 since each cell of an island contributes 4 sides to the perimeter.
+However, if a cell has a neighboring land cell, it means two sides are shared, so 2 is subtracted for each shared side (-neighbors * 2).
+Returning Result: Finally, it returns the calculated perimeter.
+--------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------------
+class Solution {
+  public int islandPerimeter(int[][] grid) {
+    int islands = 0;
+    int neighbors = 0;
+
+    for (int i = 0; i < grid.length; ++i)
+      for (int j = 0; j < grid[0].length; ++j)
+        if (grid[i][j] == 1) {
+          ++islands;
+          if (i - 1 >= 0 && grid[i - 1][j] == 1)
+            ++neighbors;
+          if (j - 1 >= 0 && grid[i][j - 1] == 1)
+            ++neighbors;
+        }
+
+    return islands * 4 - neighbors * 2;
+  }
+}
