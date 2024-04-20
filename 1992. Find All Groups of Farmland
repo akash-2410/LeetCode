@@ -1,0 +1,122 @@
+----------------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------
+You are given a 0-indexed m x n binary matrix land where a 0 represents a hectare of forested land and a 1 represents a hectare of farmland.
+
+To keep the land organized, there are designated rectangular areas of hectares that consist entirely of farmland.
+These rectangular areas are called groups. No two groups are adjacent, meaning farmland in one group is not four-directionally adjacent to another farmland in a different group.
+
+land can be represented by a coordinate system where the top left corner of land is (0, 0) and the bottom right corner of land is (m-1, n-1). 
+Find the coordinates of the top left and bottom right corner of each group of farmland. A group of farmland with a top left corner at (r1, c1) and a bottom right corner at (r2, c2) 
+is represented by the 4-length array [r1, c1, r2, c2].
+
+Return a 2D array containing the 4-length arrays described above for each group of farmland in land. If there are no groups of farmland, return an empty array. 
+You may return the answer in any order.You are given a 0-indexed m x n binary matrix land where a 0 represents a hectare of forested land and a 1 represents a hectare of farmland.
+
+To keep the land organized, there are designated rectangular areas of hectares that consist entirely of farmland. These rectangular areas are called groups. 
+No two groups are adjacent, meaning farmland in one group is not four-directionally adjacent to another farmland in a different group.
+
+land can be represented by a coordinate system where the top left corner of land is (0, 0) and the bottom right corner of land is (m-1, n-1). 
+Find the coordinates of the top left and bottom right corner of each group of farmland. A group of farmland with a top left corner at (r1, c1) and a bottom right corner at 
+(r2, c2) is represented by the 4-length array [r1, c1, r2, c2].
+
+Return a 2D array containing the 4-length arrays described above for each group of farmland in land. If there are no groups of farmland, return an empty array. 
+You may return the answer in any order.
+----------------------------------------------------------------------------------------------Example--------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2021/07/27/screenshot-2021-07-27-at-12-23-15-copy-of-diagram-drawio-diagrams-net.png
+Input: land = [[1,0,0],[0,1,1],[0,1,1]]
+Output: [[0,0,0,0],[1,1,2,2]]
+Explanation:
+The first group has a top left corner at land[0][0] and a bottom right corner at land[0][0].
+The second group has a top left corner at land[1][1] and a bottom right corner at land[2][2].
+
+Example 2:
+https://assets.leetcode.com/uploads/2021/07/27/screenshot-2021-07-27-at-12-30-26-copy-of-diagram-drawio-diagrams-net.png
+Input: land = [[1,1],[1,1]]
+Output: [[0,0,1,1]]
+Explanation:
+The first group has a top left corner at land[0][0] and a bottom right corner at land[1][1].
+
+Example 3:
+https://assets.leetcode.com/uploads/2021/07/27/screenshot-2021-07-27-at-12-32-24-copy-of-diagram-drawio-diagrams-net.png
+Input: land = [[0]]
+Output: []
+Explanation:
+There are no groups of farmland.
+----------------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------
+Approach
+Initialize an empty list result to store the coordinates of the top-left and bottom-right corners of each group of farmland.
+Traverse the 2D matrix land using two nested loops.
+For each cell in land, if the cell contains farmland (value = 1), call the findFarmlandCoordinates method to find the coordinates of the farmland group.
+Inside the findFarmlandCoordinates method, start with the current cell and traverse down and right to find the bottom-right corner of the farmland group.
+While traversing down and right, mark all visited cells as 0 to avoid revisiting them.
+Return the coordinates of the top-left and bottom-right corners of the farmland group.
+Add the coordinates to the result list.
+After traversing the entire land, return the result list.
+
+⏰ Complexity
+Time complexity: O(M×N)O(M \times N)O(M×N), where MMM is the number of rows and N is the number of columns in the land matrix. We traverse each cell once.
+Space complexity: O(K)O(K)O(K), where KKK is the number of groups of farmland. We store the coordinates of each group in the result list.
+
+
+
+
+----------------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------
+class Solution {
+    public int[][] findFarmland(int[][] land) {
+        // Initialize a list to store the coordinates of farmland groups
+        List<int[]> result = new ArrayList<>();
+        
+        // Get the number of rows and columns in the land grid
+        int m = land.length;
+        int n = land[0].length;
+        
+        // Iterate through each cell in the land grid
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // If the current cell represents farmland (value = 1), find its coordinates
+                if (land[i][j] == 1) {
+                    int[] coordinates = findFarmlandCoordinates(land, i, j);
+                    // Add the coordinates of the farmland group to the result list
+                    result.add(coordinates);
+                }
+            }
+        }
+        
+        // Convert the list of coordinates to a 2D array and return
+        return result.toArray(new int[result.size()][]);
+    }
+    
+    // Method to find the coordinates of the farmland group given a starting cell
+    private int[] findFarmlandCoordinates(int[][] land, int row, int col) {
+        // Initialize an array to store the coordinates of the farmland group
+        int[] coordinates = new int[4];
+        coordinates[0] = row; // Store the starting row
+        coordinates[1] = col; // Store the starting column
+        
+        // Get the number of rows and columns in the land grid
+        int m = land.length;
+        int n = land[0].length;
+        
+        int r = row;
+        int c = col;
+        
+        // Finding the bottom-right corner of the farmland group
+        // Increment r until reaching the bottom boundary or encountering non-farmland
+        while (r < m && land[r][col] == 1) r++;
+        // Increment c until reaching the right boundary or encountering non-farmland
+        while (c < n && land[row][c] == 1) c++;
+        // Store the coordinates of the bottom-right corner of the farmland group
+        coordinates[2] = r - 1; // Subtract 1 because r points to the next row after the farmland
+        coordinates[3] = c - 1; // Subtract 1 because c points to the next column after the farmland
+    
+        // Mark the cells of the farmland group as visited (set them to 0)
+        for (int i = row; i < r; i++) {
+            for (int j = col; j < c; j++) {
+                land[i][j] = 0;
+            }
+        }
+        
+        // Return the coordinates of the farmland group
+        return coordinates;
+    }
+}
