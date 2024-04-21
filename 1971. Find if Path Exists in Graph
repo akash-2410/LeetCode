@@ -1,0 +1,79 @@
+----------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------------
+There is a bi-directional graph with n vertices, where each vertex is labeled from 0 to n - 1 (inclusive).
+The edges in the graph are represented as a 2D integer array edges, where each edges[i] = [ui, vi] denotes a bi-directional edge between vertex ui and vertex vi.
+Every vertex pair is connected by at most one edge, and no vertex has an edge to itself.
+You want to determine if there is a valid path that exists from vertex source to vertex destination.
+Given edges and the integers n, source, and destination, return true if there is a valid path from source to destination, or false otherwise.
+----------------------------------------------------------------------------------------Example--------------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2021/08/14/validpath-ex1.png
+Input: n = 3, edges = [[0,1],[1,2],[2,0]], source = 0, destination = 2
+Output: true
+Explanation: There are two paths from vertex 0 to vertex 2:
+- 0 → 1 → 2
+- 0 → 2
+
+Example 2:
+https://assets.leetcode.com/uploads/2021/08/14/validpath-ex2.png
+Input: n = 6, edges = [[0,1],[0,2],[3,5],[5,4],[4,3]], source = 0, destination = 5
+Output: false
+Explanation: There is no path from vertex 0 to vertex 5.
+----------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------------
+The function validPath takes four parameters:
+n: The number of nodes in the graph.
+edges: A 2D array representing the edges between nodes.
+source: The starting node.
+destination: The target node.
+If there are no edges (edges.length == 0), it means any source-destination pair is valid, so the function returns true.
+A boolean array visited is initialized to keep track of visited nodes. Nodes that are visited are marked as true.
+The source node is marked as visited initially.
+The flag variable is initialized to true to enter the main loop.
+The main loop continues until flag remains true, indicating that changes are still being made to the visited array.
+Within the loop:
+The flag is reset to false at the beginning of each iteration.
+The loop iterates through each edge in the edges array.
+If the two nodes of an edge are visited differently (visited[edge[0]] != visited[edge[1]]), both nodes are marked as visited, and the flag is set to true to indicate changes were made.
+If the destination node becomes visited during this process, it means there's a valid path, so the function returns true.
+If the loop completes without finding a valid path (i.e., the destination node is never visited), the function returns false.
+
+
+
+----------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------------
+class Solution {
+    // Function to determine if there exists a valid path from source to destination.
+    public boolean validPath(int n, int[][] edges, int source, int destination) {
+        // If there are no edges, any source-destination pair is valid.
+        if (edges.length == 0)
+            return true;
+        
+        // Array to keep track of visited nodes.
+        boolean[] visited = new boolean[n];
+        // Mark the source node as visited.
+        visited[source] = true;
+        
+        // Flag to indicate whether any changes were made in this iteration.
+        boolean flag = true;
+        
+        // Loop until flag remains true, indicating that changes are still being made.
+        while (flag) {
+            // Reset flag to false at the beginning of each iteration.
+            flag = false;
+            
+            // Iterate through each edge.
+            for (int[] edge : edges) {
+                // If the two nodes of the edge are visited differently, mark them both as visited.
+                if (visited[edge[0]] != visited[edge[1]]) {
+                    visited[edge[0]] = true;
+                    visited[edge[1]] = true;
+                    // Set flag to true to indicate changes were made in this iteration.
+                    flag = true;
+                }
+                // If the destination node is visited, return true as a valid path exists.
+                if (visited[destination])
+                    return true;
+            }
+        }
+        // If the destination node is never visited, return false as there is no valid path.
+        return false;
+    }
+}
