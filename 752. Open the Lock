@@ -1,0 +1,110 @@
+------------------------------------------------------------------------------------------Question-----------------------------------------------------------------------------------------------
+You have a lock in front of you with 4 circular wheels. Each wheel has 10 slots: '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'. The wheels can rotate freely and wrap around:
+for example we can turn '9' to be '0', or '0' to be '9'. Each move consists of turning one wheel one slot.
+
+The lock initially starts at '0000', a string representing the state of the 4 wheels.
+
+You are given a list of deadends dead ends, meaning if the lock displays any of these codes, the wheels of the lock will stop turning and you will be unable to open it.
+
+Given a target representing the value of the wheels that will unlock the lock, return the minimum total number of turns required to open the lock, or -1 if it is impossible.
+------------------------------------------------------------------------------------------Example-----------------------------------------------------------------------------------------------
+Example 1:
+Input: deadends = ["0201","0101","0102","1212","2002"], target = "0202"
+Output: 6
+Explanation: 
+A sequence of valid moves would be "0000" -> "1000" -> "1100" -> "1200" -> "1201" -> "1202" -> "0202".
+Note that a sequence like "0000" -> "0001" -> "0002" -> "0102" -> "0202" would be invalid,
+because the wheels of the lock become stuck after the display becomes the dead end "0102".
+
+Example 2:
+Input: deadends = ["8888"], target = "0009"
+Output: 1
+Explanation: We can turn the last wheel in reverse to move from "0000" -> "0009".
+
+Example 3:
+Input: deadends = ["8887","8889","8878","8898","8788","8988","7888","9888"], target = "8888"
+Output: -1
+Explanation: We cannot reach the target without getting stuck.
+------------------------------------------------------------------------------------------Intution-----------------------------------------------------------------------------------------------
+Initialization:
+Create a Set<String> called dead to store the deadends provided as input.
+Initialize the start string to "0000" representing the initial lock combination.
+If the initial combination is a deadend, return -1 indicating that it's impossible to open the lock.
+Create a Queue<String> called que to perform BFS.
+Add the initial combination start to the queue.
+Breadth-First Search (BFS):
+Perform BFS until the queue is empty.
+Initialize the level to 0, which represents the number of turns taken to reach the target combination.
+In each iteration of the BFS loop:
+Poll a combination curr from the queue.
+If curr equals the target, return the level, indicating the minimum number of turns required to reach the target combination.
+Otherwise, generate all possible combinations reachable from curr by rotating each digit of the lock either clockwise or counterclockwise.
+Check if the generated combinations are valid (not in the dead set). If valid, add them to the queue for further exploration.
+Increment the level after exploring all combinations at the current level.
+Helper Method fillNeighbors:
+This method generates all possible combinations reachable from the current combination by rotating each digit either clockwise or counterclockwise.
+For each digit in the combination:
+Get the current character ch at that position.
+Generate two new combinations:
+One by decrementing ch (if ch is '0', wrap around to '9').
+One by incrementing ch (if ch is '9', wrap around to '0').
+Check if the generated combinations are not in the dead set. If not, add them to the queue for further exploration.
+
+------------------------------------------------------------------------------------------Code--------------------------------------------------------------------------------------------------
+class Solution {
+    public void fillNeighbors(Queue<String> que, StringBuilder curr, Set<String> dead) {
+        for (int i = 0; i < 4; i++) {
+            char ch = curr.charAt(i);
+
+            char dec = (ch == '0') ? '9' : (char) (ch - 1);
+            char inc = (ch == '9') ? '0' : (char) (ch + 1);
+
+            curr.setCharAt(i, dec);
+            String decStr = curr.toString();
+            if (!dead.contains(decStr)) {
+                dead.add(decStr);
+                que.add(decStr);
+            }
+
+            curr.setCharAt(i, inc);
+            String incStr = curr.toString();
+            if (!dead.contains(incStr)) {
+                dead.add(incStr);
+                que.add(incStr);
+            }
+            curr.setCharAt(i, ch);
+        }
+    }
+
+    public int openLock(String[] deadends, String target) {
+        Set<String> dead = new HashSet<>();
+        for (String deadend : deadends) {
+            dead.add(deadend);
+        }
+
+        String start = "0000";
+        if (dead.contains(start)) {
+            return -1;
+        }
+
+        Queue<String> que = new LinkedList<>();
+        que.add(start);
+
+        int level = 0;
+        while (!que.isEmpty()) {
+            int n = que.size();
+
+            while (n-- > 0) {
+                String curr = que.poll();
+                if (curr.equals(target)) {
+                    return level;
+                }
+
+                StringBuilder currBuilder = new StringBuilder(curr);
+                fillNeighbors(que, currBuilder, dead);
+            }
+            level++;
+        }
+        return -1;
+    }
+}
