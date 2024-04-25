@@ -1,0 +1,61 @@
+--------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------
+You are given a string s consisting of lowercase letters and an integer k. We call a string t ideal if the following conditions are satisfied:
+t is a subsequence of the string s.
+The absolute difference in the alphabet order of every two adjacent letters in t is less than or equal to k.
+Return the length of the longest ideal string.
+A subsequence is a string that can be derived from another string by deleting some or no characters without changing the order of the remaining characters.
+
+Note that the alphabet order is not cyclic. For example, the absolute difference in the alphabet order of 'a' and 'z' is 25, not 1.
+--------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------
+Example 1:
+Input: s = "acfgbd", k = 2
+Output: 4
+Explanation: The longest ideal string is "acbd". The length of this string is 4, so 4 is returned.
+Note that "acfgbd" is not ideal because 'c' and 'f' have a difference of 3 in alphabet order.
+
+Example 2:
+Input: s = "abcd", k = 3
+Output: 4
+Explanation: The longest ideal string is "abcd". The length of this string is 4, so 4 is returned.
+
+--------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------
+Initialization: The code initializes an array t of size 26 to store the length of the longest ideal string ending with each character from 'a' to 'z'.
+The variable result is initialized to 0, which will eventually hold the length of the longest ideal string.
+Iterating Over the String: It loops through each character in the input string s.
+Determine Range: For the current character at index i, it determines the range of characters that can be modified while keeping the distance within k.
+This range is determined by calculating the leftmost and rightmost characters (left and right respectively) using the formula Math.max(0, curr - k) and Math.min(25, curr + k) respectively. 
+Here, 0 represents 'a', 25 represents 'z', and curr represents the current character being considered.
+Finding the Longest Ideal String: Within the range determined, 
+it iterates through each character and finds the length of the longest ideal string that can be formed by selecting the maximum value from t[j], where j ranges from left to right.
+Updating Length: It updates the length of the longest ideal string ending with the current character (t[curr]) to be the maximum of its current value and the longest ideal string length,
+found in the previous step (longest + 1).
+Updating Overall Result: It updates the overall result (result) to be the maximum of its current value and the length of the longest ideal string ending with the current character.
+Return Result: After iterating through all characters in the input string, it returns the final result, which represents the length of the longest ideal string that can be formed.
+--------------------------------------------------------------------------------------------Code=------------------------------------------------------------------------------------------------
+public class Solution {
+    public int longestIdealString(String s, int k) {
+        int n = s.length();
+        
+        int[] t = new int[26];
+        
+        int result = 0;
+        
+        for(int i = 0; i < n; i++) {
+            
+            int curr = s.charAt(i) - 'a';
+            int left = Math.max(0, curr - k);
+            int right = Math.min(25, curr + k);
+
+            int longest = 0;
+            for(int j = left; j <= right; j++) {
+                longest = Math.max(longest, t[j]);
+            }
+            
+            t[curr] = Math.max(t[curr], longest + 1);
+            result = Math.max(result, t[curr]);
+        }
+        
+        return result;
+        
+    }
+}
