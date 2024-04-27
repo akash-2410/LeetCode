@@ -1,0 +1,83 @@
+------------------------------------------------------------------------------------------Question------------------------------------------------------------------------------------------------
+In the video game Fallout 4, the quest "Road to Freedom" requires players to reach a metal dial called the "Freedom Trail Ring" and use the dial to spell a specific keyword to open the door.
+
+Given a string ring that represents the code engraved on the outer ring and another string key that represents the keyword that needs to be spelled, return the minimum number of steps to 
+spell all the characters in the keyword.
+
+Initially, the first character of the ring is aligned at the "12:00" direction. You should spell all the characters in key one by one by rotating ring clockwise 
+or anticlockwise to make each character of the string key aligned at the "12:00" direction and then by pressing the center button.
+
+At the stage of rotating the ring to spell the key character key[i]:
+
+You can rotate the ring clockwise or anticlockwise by one place, which counts as one step. The final purpose of the rotation is to align one of ring's characters at the "12:00" direction,
+where this character must equal key[i].
+If the character key[i] has been aligned at the "12:00" direction, press the center button to spell, which also counts as one step.
+After the pressing, you could begin to spell the next character in the key (next stage). Otherwise, you have finished all the spelling.
+------------------------------------------------------------------------------------------Example------------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2018/10/22/ring.jpg
+Input: ring = "godding", key = "gd"
+Output: 4
+Explanation:
+For the first key character 'g', since it is already in place, we just need 1 step to spell this character. 
+For the second key character 'd', we need to rotate the ring "godding" anticlockwise by two steps to make it become "ddinggo".
+Also, we need 1 more step for spelling.
+So the final output is 4.
+
+Example 2:
+Input: ring = "godding", key = "godding"
+Output: 13
+------------------------------------------------------------------------------------------Intution------------------------------------------------------------------------------------------------
+countSteps(int ringIndex, int i, int n):
+This method calculates the minimum number of steps needed to move from the current alignment of the ring (indexed by ringIndex) to a desired character (i), 
+considering the wrap-around feature of the ring.
+It calculates the distance between the current alignment (ringIndex) and the desired character (i) and the wrap-around distance,
+which is the distance when considering the ring's circular nature (n - dist).
+It returns the minimum of these two distances.
+findRotateSteps(String ring, String key):
+This method calculates the minimum number of steps required to spell out the entire "key" string starting from any position in the "ring" string.
+It initializes a 2D array t to store the minimum steps for each alignment of the ring and each character in the key.
+It sets the base case for the dynamic programming approach: when all characters in the key are spelled out (when keyIndex == m), the steps required are 0 for any alignment of the ring.
+It iterates through each character in the key string, starting from the end, and for each character, it iterates through each alignment of the ring.
+For each alignment of the ring and character in the key, it calculates the minimum steps required by considering all possible alignments of the ring for the next character in the key.
+It updates the minimum steps in the t array accordingly.
+Finally, it returns the minimum steps required to spell out the entire key string starting from the beginning of the ring (t[0][0]).
+
+------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------
+public class Solution {
+    int countSteps(int ringIndex, int i, int n) {
+        int dist       = Math.abs(i - ringIndex);
+        int wrapAround =  n - dist;
+        
+        return Math.min(dist, wrapAround);
+    }
+    
+    public int findRotateSteps(String ring, String key) {
+        int n = ring.length();
+        int m = key.length(); 
+        
+        int[][] t = new int[n+1][m+1];
+        //t[ringIndex][keyIndex] = minimum number of steps to get key[keyIndex] when the ring[ringIndex] is aligned with the "12:00" position.
+        
+        // Base case: when all key characters are done (we reached index n).
+        for(int ringIndex = 0; ringIndex < n; ringIndex++) {
+            t[ringIndex][m] = 0;
+        }
+    
+        for(int keyIndex = m-1; keyIndex >= 0; keyIndex--) {
+            for(int ringIndex = 0; ringIndex < n; ringIndex++) {
+                
+                int result = Integer.MAX_VALUE;
+                for (int i = 0; i < ring.length(); i++) {
+                    if (ring.charAt(i) == key.charAt(keyIndex)) {
+                        int totalSteps = countSteps(ringIndex, i, ring.length()) + 1 +
+                                            t[i][keyIndex + 1];
+                        result = Math.min(result, totalSteps);
+                    }
+                }
+                t[ringIndex][keyIndex] = result;
+            }
+        }
+        return t[0][0];
+    }
+}
