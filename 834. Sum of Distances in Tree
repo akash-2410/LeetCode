@@ -1,0 +1,88 @@
+----------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------------
+There is an undirected connected tree with n nodes labeled from 0 to n - 1 and n - 1 edges.
+
+You are given the integer n and the array edges where edges[i] = [ai, bi] indicates that there is an edge between nodes ai and bi in the tree.
+
+Return an array answer of length n where answer[i] is the sum of the distances between the ith node in the tree and all other nodes.
+----------------------------------------------------------------------------------------Example--------------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2021/07/23/lc-sumdist1.jpg
+Input: n = 6, edges = [[0,1],[0,2],[2,3],[2,4],[2,5]]
+Output: [8,12,6,10,10,10]
+Explanation: The tree is shown above.
+We can see that dist(0,1) + dist(0,2) + dist(0,3) + dist(0,4) + dist(0,5)
+equals 1 + 1 + 2 + 2 + 2 = 8.
+Hence, answer[0] = 8, and so on.
+
+Example 2:
+https://assets.leetcode.com/uploads/2021/07/23/lc-sumdist2.jpg
+Input: n = 1, edges = []
+Output: [0]
+
+Example 3:
+https://assets.leetcode.com/uploads/2021/07/23/lc-sumdist3.jpg
+Input: n = 2, edges = [[1,0]]
+Output: [1,1]
+----------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------------
+Class Variables:
+graph: A 2D array representing the tree structure. Each index i holds an array of its adjacent nodes.
+count: An array to keep track of the number of nodes in each subtree rooted at i.
+res: An array to store the sum of distances for each node.
+N: The number of nodes in the tree.
+sumOfDistancesInTree Method:
+Initializes class variables and iterates over the edges array to populate the graph and count arrays.
+Calls two Depth First Search (DFS) methods, dfs1 and dfs2, to compute the sum of distances for each node.
+dfs1 Method (Depth First Search - Part 1):
+Recursively calculates the count of nodes in the subtree rooted at cur.
+Also computes the sum of distances for each node in the subtree.
+dfs2 Method (Depth First Search - Part 2):
+Recursively adjusts the sum of distances for each node considering the subtree rooted at cur.
+
+----------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------------
+class Solution {
+    int[][] graph;
+    int[] count;
+    int[] res;
+    int N;
+    
+    public int[] sumOfDistancesInTree(int N, int[][] edges) {
+        this.N = N;
+        this.res = new int[N];
+        this.graph = new int[N][];
+        this.count = new int[N];
+        
+        for (int[] e : edges) {
+            ++count[e[0]];
+            ++count[e[1]];
+        }
+        for (int i = 0; i < N; i++) {
+            graph[i] = new int[count[i]];
+        }
+        for (int[] e : edges) {
+            graph[e[0]][--count[e[0]]] = e[1];
+            graph[e[1]][--count[e[1]]] = e[0];
+        }
+        dfs1(0, -1);
+        dfs2(0, -1);
+        return res;
+    }
+    public void dfs1(int cur, int parent) {
+        count[cur] = 1;
+        for (int child : graph[cur]) {
+            if (child != parent) {
+                dfs1(child, cur);
+                count[cur] += count[child];
+                res[cur] += res[child] + count[child];
+            }
+        }
+    }
+    public void dfs2(int cur, int parent) {
+        for (int child : graph[cur]) {
+            if (child != parent) {
+                res[child] = res[cur] + N - 2 * count[child];
+                dfs2(child, cur);
+            }
+        }
+    }
+}
+
