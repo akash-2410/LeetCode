@@ -1,0 +1,50 @@
+----------------------------------------------------------------------------------------------Question--------------------------------------------------------------------------------------------
+Given a 0-indexed string word and a character ch, reverse the segment of word that starts at index 0 and ends at the index of the first occurrence of ch (inclusive). 
+If the character ch does not exist in word, do nothing.
+
+For example, if word = "abcdefd" and ch = "d", then you should reverse the segment that starts at 0 and ends at 3 (inclusive). The resulting string will be "dcbaefd".
+Return the resulting string.
+----------------------------------------------------------------------------------------------Example--------------------------------------------------------------------------------------------
+Example 1:
+Input: word = "abcdefd", ch = "d"
+Output: "dcbaefd"
+Explanation: The first occurrence of "d" is at index 3. 
+Reverse the part of word from 0 to 3 (inclusive), the resulting string is "dcbaefd".
+
+Example 2:
+Input: word = "xyxzxe", ch = "z"
+Output: "zxyxxe"
+Explanation: The first and only occurrence of "z" is at index 3.
+Reverse the part of word from 0 to 3 (inclusive), the resulting string is "zxyxxe".
+
+Example 3:
+Input: word = "abcd", ch = "z"
+Output: "abcd"
+Explanation: "z" does not exist in word.
+You should not do any reverse operation, the resulting string is "abcd".
+----------------------------------------------------------------------------------------------Intution--------------------------------------------------------------------------------------------
+Iterate Through the String:
+Start by iterating through the given string word character by character until you find the target character ch.
+If the character ch is not found, return the original string word.
+
+Reverse the Prefix:
+Once the target character ch is found, reverse the substring from the beginning of the string up to and including the index of ch.
+You can use slicing or other methods available in the programming language to reverse the substring.
+
+Concatenate the Reversed Prefix with the Remaining String:
+After reversing the prefix, concatenate it with the remaining part of the string after the index of ch.
+This can be done using string concatenation or string joining methods depending on the programming language.
+
+Return the Modified String:
+Finally, return the modified string after reversing the prefix up to the first occurrence of the target character ch.
+----------------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------
+class Solution {
+    public String reversePrefix(String word, char ch) {
+        int j = word.indexOf(ch);
+        if (j != -1) {
+            return new StringBuilder(word.substring(0, j + 1)).reverse().toString() + word.substring(j + 1);
+        }
+        return word;
+    }
+}
+
