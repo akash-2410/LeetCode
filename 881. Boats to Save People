@@ -1,0 +1,65 @@
+--------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------
+You are given an array people where people[i] is the weight of the ith person, and an infinite number of boats where each boat can carry a maximum weight of limit. 
+Each boat carries at most two people at the same time, provided the sum of the weight of those people is at most limit.
+
+Return the minimum number of boats to carry every given person.
+--------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------
+Example 1:
+Input: people = [1,2], limit = 3
+Output: 1
+Explanation: 1 boat (1, 2)
+
+Example 2:
+Input: people = [3,2,2,1], limit = 3
+Output: 3
+Explanation: 3 boats (1, 2), (2) and (3)\
+
+Example 3:
+Input: people = [3,5,3,4], limit = 5
+Output: 4
+Explanation: 4 boats (3), (3), (4), (5)
+
+
+--------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------
+Approach
+Sort the array: The function first sorts the array of people in ascending order. This is crucial for the algorithm to work efficiently.
+Arrays.sort(people);
+Initialize pointers: Two pointers, i and j, are initialized at the beginning and end of the sorted array, respectively.
+int i = 0, j = people.length - 1;
+Iterate through the array: A while loop is used to iterate through the array from both ends (i from the beginning and j from the end) until they meet or cross each other.
+while (i <= j) {
+}
+Check if two people can fit in a boat: Within the loop, it checks if the weight of the person at index i and the person at index j is less than or equal to the given limit.
+if ((people[j] + people[i]) <= limit) {
+    i++; // If they can fit, move to the next person from the lighter side.
+}
+Move pointer: Regardless of whether two people can fit in a boat or not, the pointer j is decremented in each iteration to consider the next person from the heavier end of the array.
+j--;
+Count boats: Increment the boats variable in each iteration to keep track of the number of boats required.
+boats++;
+Return the total number of boats: Finally, the function returns the total number of boats required to rescue all the people.
+return boats;
+Complexity
+Time complexity:
+O(n log n)
+
+Space complexity:
+O(1)
+
+
+--------------------------------------------------------------------------------------------Code------------------------------------------------------------------------------------------------
+class Solution {
+    public int numRescueBoats(int[] people, int limit) {
+        int boats = 0;
+        Arrays.sort(people);
+        int i=0,j=people.length-1;
+        while(i<=j){
+            if((people[j]+people[i])<=limit){
+                i++;
+            }
+            j--;
+            boats++;
+        }
+        return boats;
+    }
+}
