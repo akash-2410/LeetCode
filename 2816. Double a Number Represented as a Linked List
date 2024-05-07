@@ -1,0 +1,53 @@
+----------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------------
+You are given the head of a non-empty linked list representing a non-negative integer without leading zeroes.
+
+Return the head of the linked list after doubling it.
+----------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2023/05/28/example.png
+Input: head = [1,8,9]
+Output: [3,7,8]
+Explanation: The figure above corresponds to the given linked list which represents the number 189. Hence, the returned linked list represents the number 189 * 2 = 378.
+
+Example 2:
+https://assets.leetcode.com/uploads/2023/05/28/example2.png
+Input: head = [9,9,9]
+Output: [1,9,9,8]
+Explanation: The figure above corresponds to the given linked list which represents the number 999. Hence, the returned linked list reprersents the number 999 * 2 = 1998. 
+----------------------------------------------------------------------------------------Intution-------------------------------------------------------------------------------------------------
+The method doubleIt traverses the linked list using two pointers, curr and prev. curr points to the current node being processed, and prev points to the previous node.
+Inside the loop, the code doubles the value of the current node (curr.val) and stores it in a variable newVal.
+If newVal is less than 10, it updates the value of the current node to newVal.
+If newVal is greater than or equal to 10, it handles the carry over:
+If there's a previous node (prev != null), it adds 1 to the value of the previous node (prev.val) and updates the current node's value to the remainder of newVal divided by 10.
+If there's no previous node, it creates a new node with value 1 and inserts it before the current node. Then, it updates the current node's value to the remainder of newVal divided by 10.
+After processing the current node, it updates prev to point to the current node (prev = curr) and moves curr to the next node (curr = curr.next).
+Once the loop completes, it returns the modified head of the linked list.
+----------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------------
+class Solution {
+    public ListNode doubleIt(ListNode head) {
+        ListNode curr = head;
+        ListNode prev = null;
+        
+        while (curr != null) {
+            int newVal = curr.val * 2;
+            
+            if (newVal < 10) {
+                curr.val = newVal;
+            } else if (prev != null) {
+                curr.val = newVal % 10;
+                prev.val += 1;
+            } else {
+                ListNode newHead = new ListNode(1);
+                newHead.next = curr;
+                curr.val = newVal % 10;
+                head = newHead;
+            }
+            
+            prev = curr;
+            curr = curr.next;
+        }
+        
+        return head;
+    }
+}
