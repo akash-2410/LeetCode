@@ -1,0 +1,69 @@
+--------------------------------------------------------------------------------------------Question----------------------------------------------------------------------------------------------
+You are given an integer array score of size n, where score[i] is the score of the ith athlete in a competition. All the scores are guaranteed to be unique.
+
+The athletes are placed based on their scores, where the 1st place athlete has the highest score, the 2nd place athlete has the 2nd highest score, and so on.
+The placement of each athlete determines their rank:
+
+The 1st place athlete's rank is "Gold Medal".
+The 2nd place athlete's rank is "Silver Medal".
+The 3rd place athlete's rank is "Bronze Medal".
+For the 4th place to the nth place athlete, their rank is their placement number (i.e., the xth place athlete's rank is "x").
+Return an array answer of size n where answer[i] is the rank of the ith athlete.
+--------------------------------------------------------------------------------------------Example----------------------------------------------------------------------------------------------
+Example 1:
+Input: score = [5,4,3,2,1]
+Output: ["Gold Medal","Silver Medal","Bronze Medal","4","5"]
+Explanation: The placements are [1st, 2nd, 3rd, 4th, 5th].
+
+Example 2:
+Input: score = [10,3,8,9,4]
+Output: ["Gold Medal","5","Bronze Medal","Silver Medal","4"]
+Explanation: The placements are [1st, 5th, 3rd, 2nd, 4th].
+--------------------------------------------------------------------------------------------Intution----------------------------------------------------------------------------------------------
+Input:
+The method findRelativeRanks takes an array of integers score as input, representing the scores of athletes.
+
+Sorting Scores:
+The scores are first converted to an Integer array and then sorted in reverse order using Arrays.stream(score).boxed().sorted(Collections.reverseOrder()).toArray(Integer[]::new);. 
+This ensures that the highest score comes first, followed by the next highest, and so on.
+
+Medals:
+An array medals is initialized with strings representing medals: "Gold Medal", "Silver Medal", and "Bronze Medal". These will be assigned to the first, second, and third ranks, respectively.
+
+Rank Mapping:
+A HashMap called rankMapping is initialized. It will store the score as the key and the corresponding rank (or medal) as the value.
+A loop iterates through the sorted scores. If the index i is less than 3, it means the athlete is among the top three, so their score is mapped to the corresponding medal. Otherwise, 
+the rank is represented as a string using String.valueOf(i + 1) (adding 1 to i to convert from zero-based index to rank).
+
+Assigning Ranks:
+Another loop iterates through the original score array.
+For each score, the corresponding rank or medal is retrieved from rankMapping and stored in the result array.
+
+Output:
+The result array, containing the ranks or medals for each athlete based on their scores, is returned.
+
+Intuition:
+The code first sorts the scores in descending order to identify the top performers.
+It then assigns medals to the top three scores and ranks to the rest based on their positions in the sorted list.
+Finally, it returns an array where each element represents the rank or medal corresponding to the athlete's score.
+This approach ensures that athletes with higher scores receive better ranks or medals, giving recognition to their performance.
+--------------------------------------------------------------------------------------------Code-------------------------------------------------------------------------------------------------
+class Solution {
+    public String[] findRelativeRanks(int[] score) {
+        Integer[] sortedScore = Arrays.stream(score).boxed().sorted(Collections.reverseOrder()).toArray(Integer[]::new);
+        String[] medals = {"Gold Medal", "Silver Medal", "Bronze Medal"};
+        Map<Integer, String> rankMapping = new HashMap<>();
+        for (int i = 0; i < sortedScore.length; i++) {
+            if (i < 3) {
+                rankMapping.put(sortedScore[i], medals[i]);
+            } else {
+                rankMapping.put(sortedScore[i], String.valueOf(i + 1));
+            }
+        }
+        String[] result = new String[score.length];
+        for (int i = 0; i < score.length; i++) {
+            result[i] = rankMapping.get(score[i]);
+        }
+        return result;
+    }
+}
