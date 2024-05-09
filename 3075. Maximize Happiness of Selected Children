@@ -1,0 +1,72 @@
+__________________________________________________________________________________________Question________________________________________________________________________________________________
+
+You are given an array happiness of length n, and a positive integer k.
+
+There are n children standing in a queue, where the ith child has happiness value happiness[i]. You want to select k children from these n children in k turns.
+
+In each turn, when you select a child, the happiness value of all the children that have not been selected till now decreases by 1. Note that the happiness value cannot become negative and gets decremented only if it is positive.
+
+Return the maximum sum of the happiness values of the selected children you can achieve by selecting k children.
+__________________________________________________________________________________________Example________________________________________________________________________________________________
+
+Example 1:
+Input: happiness = [1,2,3], k = 2
+Output: 4
+Explanation: We can pick 2 children in the following way:
+- Pick the child with the happiness value == 3. The happiness value of the remaining children becomes [0,1].
+- Pick the child with the happiness value == 1. The happiness value of the remaining child becomes [0]. Note that the happiness value cannot become less than 0.
+The sum of the happiness values of the selected children is 3 + 1 = 4.
+
+Example 2:
+Input: happiness = [1,1,1,1], k = 2
+Output: 1
+Explanation: We can pick 2 children in the following way:
+- Pick any child with the happiness value == 1. The happiness value of the remaining children becomes [0,0,0].
+- Pick the child with the happiness value == 0. The happiness value of the remaining child becomes [0,0].
+The sum of the happiness values of the selected children is 1 + 0 = 1.
+__________________________________________________________________________________________Intution And Code__________________________________________________________________________________
+class Solution {
+        // This method calculates the maximum sum of happiness
+    public long maximumHappinessSum(int[] happiness, int k) {
+        // Sort the happiness array in ascending order
+        Arrays.sort(happiness);
+        // Reverse the sorted array to have the highest happiness values at the beginning
+        reverseArray(happiness);
+
+        // Initialize the result to store the total happiness sum
+        long result = 0;
+        
+        // Initialize a counter to keep track of how many people are already happy
+        int count = 0;
+        
+        // Iterate through the first 'k' elements of the happiness array
+        for (int i = 0; i < k; i++) {
+            // Calculate the contribution of the current person's happiness to the total sum
+            // The contribution is the maximum between the current happiness and (current happiness - count)
+            // This ensures that only 'k' people are made happy, even if there are more people with higher happiness levels
+            result += Math.max(happiness[i] - count, 0);
+            // Increment the count to keep track of the number of people made happy
+            count++;
+        }
+        
+        // Return the total happiness sum
+        return result;
+    }
+    
+    // This method reverses the elements of the input array
+    private void reverseArray(int[] arr) {
+        // Initialize start index to 0 and end index to the last index of the array
+        int start = 0;
+        int end = arr.length - 1;
+        // Swap elements starting from both ends of the array until they meet in the middle
+        while (start < end) {
+            // Swap elements at start and end indices
+            int temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+            // Move towards the middle of the array
+            start++;
+            end--;
+        }
+    }   
+}
