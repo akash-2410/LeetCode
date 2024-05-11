@@ -1,0 +1,76 @@
+-----------------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------
+There are n workers. You are given two integer arrays quality and wage where quality[i] is the quality of the ith worker and wage[i] is the minimum wage expectation for the ith worker.
+
+We want to hire exactly k workers to form a paid group. To hire a group of k workers, we must pay them according to the following rules:
+
+Every worker in the paid group must be paid at least their minimum wage expectation.
+In the group, each worker's pay must be directly proportional to their quality. This means if a worker’s quality is double that of another worker in the group,
+then they must be paid twice as much as the other worker.
+Given the integer k, return the least amount of money needed to form a paid group satisfying the above conditions. Answers within 10-5 of the actual answer will be accepted.
+-----------------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------
+Example 1:
+
+Input: quality = [10,20,5], wage = [70,50,30], k = 2
+Output: 105.00000
+Explanation: We pay 70 to 0th worker and 35 to 2nd worker.
+Example 2:
+
+Input: quality = [3,1,10,10,1], wage = [4,8,2,2,7], k = 3
+Output: 30.66667
+Explanation: We pay 4 to 0th worker, 13.33333 to 2nd and 3rd workers separately.
+-----------------------------------------------------------------------------------------------Intution-------------------------------------------------------------------------------------------
+Sorting by Wage-to-Quality Ratio: The workers are sorted based on their wage-to-quality ratio. This ratio indicates how much a worker is paid per unit of quality they provide. 
+Sorting by this ratio helps in selecting the most cost-effective workers first.
+
+Priority Queue for Qualities: A priority queue is used to keep track of the qualities of selected workers.
+We prioritize workers with higher quality by adding their qualities with a negative sign. This ensures that when we exceed k workers, we remove the worker with the highest quality first.
+
+Total Quality Sum: The variable s keeps track of the sum of qualities of selected workers. As we iterate through the sorted workers, we update s by adding the quality of the current worker.
+
+Calculating Minimum Cost: Once we have selected k workers, 
+we calculate the total cost by multiplying the sum of their qualities (s) by the wage-to-quality ratio of the last worker considered. 
+We update the minimum cost res if this total cost is lower than the current minimum cost.
+
+Returning Minimum Cost: Finally, we return the minimum cost res, which represents the minimum amount required to hire k workers satisfying the given conditions.
+
+
+
+-----------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------
+class Worker implements Comparable<Worker> {
+    final int q, w; // q: quality, w: wage
+
+    // Constructor to initialize Worker object with quality and wage
+    public Worker(int q, int w) {
+        this.q = q;
+        this.w = w;
+    }
+
+    // Override compareTo method to compare Workers based on the ratio of wage to quality
+    @Override
+    public int compareTo(Worker other) {
+        // Compare workers based on the ratio of their wages to their qualities
+        return Integer.compare(w * other.q, q * other.w);
+    }
+}
+
+class Solution {
+    // Method to calculate the minimum cost to hire k workers
+    public double mincostToHireWorkers(int[] quality, int[] wage, int k) {
+        int n = quality.length; // Number of workers
+        Worker[] a = new Worker[n]; // Array to store Worker objects
+        for (int i = 0; i < n; ++i) {
+            a[i] = new Worker(quality[i], wage[i]); // Create Worker objects from quality and wage arrays
+        }
+        Arrays.sort(a); // Sort workers based on their wage-to-quality ratio
+        int s = 0; // Variable to track the sum of qualities
+        double res = 1e15; // Initialize the result with a very large value
+        PriorityQueue<Integer> q = new PriorityQueue<>(); // Priority queue to store qualities
+        for (Worker worker: a) {
+            q.add(-worker.q); // Add negative quality to prioritize workers with higher quality
+            s += worker.q; // Add current worker's quality to the total quality sum
+            if (q.size() > k) s += q.poll(); // If the number of workers exceeds k, remove the worker with the highest quality
+            if (q.size() == k) res = Math.min(res, (double) s * worker.w / worker.q); // Calculate the total cost and update the minimum cost if k workers are selected
+        }
+        return res; // Return the minimum cost to hire k workers
+    }
+}
