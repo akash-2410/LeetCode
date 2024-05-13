@@ -1,0 +1,90 @@
+=--------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------
+You are given an m x n binary matrix grid.
+
+A move consists of choosing any row or column and toggling each value in that row or column (i.e., changing all 0's to 1's, and all 1's to 0's).
+
+Every row of the matrix is interpreted as a binary number, and the score of the matrix is the sum of these numbers.
+
+Return the highest possible score after making any number of moves (including zero moves).
+=--------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2021/07/23/lc-toogle1.jpg
+Input: grid = [[0,0,1,1],[1,0,1,0],[1,1,0,0]]
+Output: 39
+Explanation: 0b1111 + 0b1001 + 0b1111 = 15 + 9 + 15 = 39
+
+Example 2:
+Input: grid = [[0]]
+Output: 1
+=--------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------
+Understanding the Problem:
+
+The problem is to find the maximum possible score of a binary matrix.
+A score is calculated based on the arrangement of bits in each column of the matrix.
+Initial Score Calculation:
+
+The score is initialized with the maximum possible score that can be achieved for the leftmost bit (Most Significant Bit - MSB).
+The score for the leftmost bit in each row is calculated as 2^(n-1), where n is the number of columns.
+Iterating Through Columns:
+
+The code iterates through each column starting from the second column (index 1).
+It analyzes the bits in each column and calculates their contribution to the final score.
+Counting Same Bits:
+
+For each column, the code counts the number of rows that have the same bit value as the first row in that column.
+This count represents the number of ones or zeros in the column.
+Calculating Contribution:
+
+Based on the count of same bits, the code calculates the number of ones and zeros in the column.
+It chooses the maximum count between ones and zeros.
+The contribution of the current column to the score is determined by multiplying the maximum count by a factor (2^(n - j - 1)), where j is the column index.
+This factor decreases as we move towards the rightmost columns, reflecting the decreasing significance of the bits.
+Updating the Score:
+
+The contribution of each column is added to the total score.
+Final Score:
+
+The final score is returned after iterating through all columns.
+
+
+
+=--------------------------------------------------------------------------------------------Code-----------------------------------------------------------------------------------------------
+class Solution {
+    public int matrixScore(int[][] grid) {
+        // Get the number of rows (m) and columns (n) in the grid
+        int m = grid.length;
+        int n = grid[0].length;
+
+        // Initialize the score with the maximum possible score for the leftmost bit
+        // MSB -> 2^(n-1)
+        int score = (int) Math.pow(2, n - 1) * m;
+
+        // Iterate through each column starting from the second column
+        for (int j = 1; j < n; j++) {
+            // Initialize a variable to count the number of rows with the same bit value
+            int countSameBits = 0; // count of 1s
+            // Iterate through each row in the current column
+            for (int i = 0; i < m; i++) {
+                // If the bit value in the current column matches the bit value in the first column
+                if (grid[i][j] == grid[i][0]) {
+                    // Increment the count of rows with the same bit value
+                    countSameBits++;
+                }
+            }
+
+            // Calculate the number of ones and zeros in the current column
+            int countOnes = countSameBits;
+            int countZeros = m - countOnes;
+
+            // Choose the maximum count between ones and zeros
+            int ones = Math.max(countOnes, countZeros);
+
+            // Update the score by adding the contribution of the current column
+            // Contribution: 2^(n - j - 1) * ones
+            score += (int) Math.pow(2, n - j - 1) * ones;
+        }
+
+        // Return the final score
+        return score;
+    }
+}
