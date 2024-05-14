@@ -1,0 +1,98 @@
+--------------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------
+In a gold mine grid of size m x n, each cell in this mine has an integer representing the amount of gold in that cell, 0 if it is empty.
+
+Return the maximum amount of gold you can collect under the conditions:
+
+Every time you are located in a cell you will collect all the gold in that cell.
+From your position, you can walk one step to the left, right, up, or down.
+You can't visit the same cell more than once.
+Never visit a cell with 0 gold.
+You can start and stop collecting gold from any position in the grid that has some gold.
+--------------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------
+Example 1:
+Input: grid = [[0,6,0],[5,8,7],[0,9,0]]
+Output: 24
+Explanation:
+[[0,6,0],
+ [5,8,7],
+ [0,9,0]]
+Path to get the maximum gold, 9 -> 8 -> 7.
+
+Example 2:
+Input: grid = [[1,0,7],[2,0,6],[3,4,5],[0,3,0],[9,0,20]]
+Output: 28
+Explanation:
+[[1,0,7],
+ [2,0,6],
+ [3,4,5],
+ [0,3,0],
+ [9,0,20]]
+Path to get the maximum gold, 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7.
+--------------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------
+DFS Method (dfs):
+This method performs a depth-first search starting from a given cell (x, y) in the grid.
+It explores all possible paths from the current cell while accumulating the amount of gold collected.
+The base case for recursion includes conditions such as being out of grid bounds or encountering a cell with no gold (value 0).
+During the exploration, it temporarily marks the visited cell as empty (0 gold) to prevent revisiting it.
+It explores all four adjacent cells (up, down, left, right) and recursively calculates the maximum amount of gold that can be collected from each valid path.
+After exploring all paths from the current cell, it restores the original gold amount in the cell before backtracking.
+
+Finding Maximum Gold (getMaximumGold):
+This method iterates through each cell in the grid.
+For each cell containing gold, it initiates a DFS starting from that cell to explore all possible paths and accumulate the maximum amount of gold.
+It maintains a global variable maxGold to store the maximum gold found during the exploration.
+After completing DFS from all cells with gold, it returns the maximum gold found.
+--------------------------------------------------------------------------------------------Code------------------------------------------------------------------------------------------------
+class Solution {
+    // Arrays for movement directions: down, up, left, right
+    int[] roww = {1, -1, 0, 0};
+    int[] coll = {0, 0, -1, 1};
+    // Variable to store the maximum gold found
+    int maxGold = 0;
+
+    // Depth-first search method
+    public int dfs(int[][] grid, int x, int y, int n, int m) {
+        // Base case: if out of grid bounds or cell is empty (0 gold), return 0
+        if (x < 0 || x >= n || y < 0 || y >= m || grid[x][y] == 0) return 0;
+        
+        // Store the current cell's gold amount, then mark it as visited (0 gold)
+        int curr = grid[x][y];
+        grid[x][y] = 0;
+        // Initialize local maximum gold with the current cell's gold amount
+        int localMaxGold = curr;
+
+        // Explore adjacent cells
+        for (int i = 0; i < 4; i++) {
+            int newX = x + roww[i]; // Calculate new X coordinate
+            int newY = y + coll[i]; // Calculate new Y coordinate
+            // Recursively explore each valid adjacent cell and update the local maximum gold
+            localMaxGold = Math.max(localMaxGold, curr + dfs(grid, newX, newY, n, m));
+        }
+
+        // Restore the original gold amount in the current cell for backtracking
+        grid[x][y] = curr;
+        // Return the local maximum gold amount found
+        return localMaxGold;
+    }
+
+    // Method to find the maximum gold
+    public int getMaximumGold(int[][] grid) {
+        int n = grid.length; // Number of rows
+        int m = grid[0].length; // Number of columns
+
+        // Iterate through each cell in the grid
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                // If the cell contains gold, start DFS from that cell to find maximum gold
+                if (grid[i][j] != 0) {
+                    maxGold = Math.max(maxGold, dfs(grid, i, j, n, m));
+                }
+            }
+        }
+
+        // Return the maximum gold found
+        return maxGold;
+    }
+}
+
+
