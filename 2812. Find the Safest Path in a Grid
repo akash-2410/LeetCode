@@ -1,0 +1,156 @@
+-------------------------------------------------------------------------------------------Question-----------------------------------------------------------------------------------------------
+You are given a 0-indexed 2D matrix grid of size n x n, where (r, c) represents:
+
+A cell containing a thief if grid[r][c] = 1
+An empty cell if grid[r][c] = 0
+You are initially positioned at cell (0, 0). In one move, you can move to any adjacent cell in the grid, including cells containing thieves.
+
+The safeness factor of a path on the grid is defined as the minimum manhattan distance from any cell in the path to any thief in the grid.
+
+Return the maximum safeness factor of all paths leading to cell (n - 1, n - 1).
+
+An adjacent cell of cell (r, c), is one of the cells (r, c + 1), (r, c - 1), (r + 1, c) and (r - 1, c) if it exists.
+
+The Manhattan distance between two cells (a, b) and (x, y) is equal to |a - x| + |b - y|, where |val| denotes the absolute value of val.
+-------------------------------------------------------------------------------------------Example-----------------------------------------------------------------------------------------------
+Example 1:
+https://assets.leetcode.com/uploads/2023/07/02/example1.png
+Input: grid = [[1,0,0],[0,0,0],[0,0,1]]
+Output: 0
+Explanation: All paths from (0, 0) to (n - 1, n - 1) go through the thieves in cells (0, 0) and (n - 1, n - 1).
+
+Example 2:
+https://assets.leetcode.com/uploads/2023/07/02/example2.png
+Input: grid = [[0,0,1],[0,0,0],[0,0,0]]
+Output: 2
+Explanation: The path depicted in the picture above has a safeness factor of 2 since:
+- The closest cell of the path to the thief at cell (0, 2) is cell (0, 0). The distance between them is | 0 - 0 | + | 0 - 2 | = 2.
+It can be shown that there are no other paths with a higher safeness factor.
+-------------------------------------------------------------------------------------------Intution-----------------------------------------------------------------------------------------------
+Precalculation of Distances to Nearest Thief:
+
+The algorithm starts by performing a breadth-first search (BFS) from each cell containing a thief to calculate the distance of each cell to the nearest thief.
+This is done by traversing the grid starting from each thief cell and marking the distance to each cell encountered.
+
+Binary Search on Safeness Factor:
+
+Once the distances to the nearest thief are calculated, the algorithm performs a binary search on the safeness factor. 
+The safeness factor represents the minimum required safety level to traverse the path from the top-left corner (cell (0, 0)) to the bottom-right corner (cell (n-1, n-1)).
+The binary search starts with an initial lower bound of 0 and an upper bound of 400 (a chosen maximum possible safeness factor). 
+It iteratively adjusts the bounds based on whether a path with the current safeness factor is possible or not.
+The check function is used to verify whether there exists a path from the top-left corner to the bottom-right corner with a given safeness factor. 
+It performs BFS from the top-left corner and checks if there exists a path with the specified safeness factor by considering the safety levels and distances to the nearest thief.
+
+Finding the Maximum Safeness Factor:
+The binary search continues until the lower bound exceeds the upper bound. At each iteration, if a path with the current safeness factor is found, 
+the result is updated to the current safeness factor, and the search moves to the right half of the search space. Otherwise, it moves to the left half.
+Finally, the algorithm returns the maximum safeness factor that allows reaching the bottom-right corner from the top-left corner while ensuring safety along the path.
+
+------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------
+class Solution {
+    int n; // Size of the grid
+    int[][] directions = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}}; // Possible directions: down, up, left, right
+
+    // Function to check if there exists a path from (0, 0) to (n-1, n-1) with safeness factor sf
+    boolean check(int[][] distNearestThief, int sf) {
+        Queue<int[]> que = new LinkedList<>(); // Queue for BFS
+        boolean[][] visited = new boolean[n][n]; // Matrix to keep track of visited cells
+
+        que.add(new int[]{0, 0}); // Add starting cell (0, 0) to the queue
+        visited[0][0] = true; // Mark (0, 0) as visited
+
+        if(distNearestThief[0][0] < sf) // If the starting cell is unsafe, return false
+            return false;
+
+        // Perform BFS
+        while(!que.isEmpty()) {
+            int[] curr = que.poll();
+            int curr_i = curr[0];
+            int curr_j = curr[1];
+
+            if(curr_i == n-1 && curr_j == n-1) { // If reached the ending cell (n-1, n-1), return true
+                return true;
+            }
+
+            // Explore adjacent cells
+            for(int[] dir : directions) {
+                int new_i = curr_i + dir[0];
+                int new_j = curr_j + dir[1];
+
+                // If the adjacent cell is within bounds and not visited
+                if(new_i >= 0 && new_i < n && new_j >= 0 && new_j < n && !visited[new_i][new_j]) {
+                    if(distNearestThief[new_i][new_j] < sf) {
+                        continue; // Reject this cell if it's unsafe
+                    }
+                    que.add(new int[]{new_i, new_j}); // Add the adjacent cell to the queue
+                    visited[new_i][new_j] = true; // Mark the adjacent cell as visited
+                }
+            }
+        }
+
+        return false; // If no path found, return false
+    }
+
+    // Function to find the maximum safeness factor
+    int maximumSafenessFactor(List<List<Integer>> grid) {
+        n = grid.size(); // Set the size of the grid
+
+        // Step-1: Precalculation of distNearestThief - for each cell
+        int[][] distNearestThief = new int[n][n]; // Matrix to store distances to the nearest thief
+        Queue<int[]> que = new LinkedList<>(); // Queue for BFS
+        boolean[][] visited = new boolean[n][n]; // Matrix to keep track of visited cells
+
+        // Push all cells in queue where thieves are present
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                if(grid.get(i).get(j) == 1) {
+                    que.add(new int[]{i, j}); // Add cell to the queue
+                    visited[i][j] = true; // Mark cell as visited
+                }
+            }
+        }
+
+        int level = 0; // Initialize level for BFS
+        while(!que.isEmpty()) {
+            int size = que.size();
+            while(size-- > 0) {
+                int[] curr = que.poll();
+                int curr_i = curr[0];
+                int curr_j = curr[1];
+
+                distNearestThief[curr_i][curr_j] = level; // Set distance to the nearest thief for current cell
+
+                // Explore adjacent cells
+                for(int[] dir : directions) {
+                    int new_i = curr_i + dir[0];
+                    int new_j = curr_j + dir[1];
+
+                    // If the adjacent cell is within bounds and not visited
+                    if(new_i >= 0 && new_i < n && new_j >= 0 && new_j < n && !visited[new_i][new_j]) {
+                        que.add(new int[]{new_i, new_j}); // Add the adjacent cell to the queue
+                        visited[new_i][new_j] = true; // Mark the adjacent cell as visited
+                    }
+                }
+            }
+            level++; // Increment level for BFS
+        }
+
+        // Step-2: Apply binary search on SF
+        int l = 0; // Lower bound for binary search
+        int r = 400; // Upper bound for binary search (maximum possible safeness factor)
+        int result = 0; // Result variable to store the maximum safeness factor found
+
+        while(l <= r) {
+            int mid_sf = l + (r - l) / 2; // Calculate the mid safeness factor
+
+            if(check(distNearestThief, mid_sf)) {
+                result = mid_sf; // Update result if a path exists with current safeness factor
+                l = mid_sf + 1; // Move to the right half for higher safeness factor
+            } else {
+                r = mid_sf - 1; // Move to the left half for lower safeness factor
+            }
+        }
+
+        return result; // Return the maximum safeness factor
+    }
+}
