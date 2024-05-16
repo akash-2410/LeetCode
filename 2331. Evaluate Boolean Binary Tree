@@ -1,0 +1,72 @@
+-----------------------------------------------------------------------------------------------Question-------------------------------------------------------------------------------------------
+You are given the root of a full binary tree with the following properties:
+Leaf nodes have either the value 0 or 1, where 0 represents False and 1 represents True.
+Non-leaf nodes have either the value 2 or 3, where 2 represents the boolean OR and 3 represents the boolean AND.
+The evaluation of a node is as follows:
+If the node is a leaf node, the evaluation is the value of the node, i.e. True or False.
+Otherwise, evaluate the node's two children and apply the boolean operation of its value with the children's evaluations.
+Return the boolean result of evaluating the root node.
+A full binary tree is a binary tree where each node has either 0 or 2 children.
+A leaf node is a node that has zero children.
+-----------------------------------------------------------------------------------------------Example-------------------------------------------------------------------------------------------
+Example 1:
+
+Input: root = [2,1,3,null,null,0,1]
+Output: true
+Explanation: The above diagram illustrates the evaluation process.
+The AND node evaluates to False AND True = False.
+The OR node evaluates to True OR False = True.
+The root node evaluates to True, so we return true.
+
+Example 2:
+
+Input: root = [0]
+Output: false
+Explanation: The root node is a leaf node and it evaluates to false, so we return false.
+
+
+
+----------------------------------------------------------------------------------------------Intution-------------------------------------------------------------------------------------------
+Base Case:
+
+If the current node is a leaf node (i.e., it has no left or right children), it represents a boolean value. This is because the leaf nodes are supposed to have either 0 or 1 as their values,
+where 0 represents false and 1 represents true. Therefore,
+root.val != 0 translates the integer value of the leaf node to a boolean value: true if the value is non-zero and false if the value is zero.
+Logical OR Operation (root.val == 2):
+
+If the value of the current node is 2, it signifies a logical OR operation. In boolean algebra, a logical OR returns true if at least one of its operands is true. 
+Therefore, it recursively evaluates the left and right subtrees using the logical OR (|) operator and returns the result.
+Logical AND Operation (root.val != 2):
+
+If the value of the current node is not 2, it implies a logical AND operation. In boolean algebra, a logical AND returns true only if both of its operands are true. 
+Therefore, it recursively evaluates the left and right subtrees using the logical AND (&) operator and returns the result.
+Assumption:
+
+The code assumes that the only possible integer values for nodes are 0, 1, and 2. This assumption simplifies the logic, as it doesn't need to handle other integer values. 
+However, if the tree can contain other integer values, additional conditions/logic would be needed to handle those cases.
+-----------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------
+class Solution {
+    
+    // Method to evaluate a binary tree
+    public boolean evaluateTree(TreeNode root) {
+        // Base case: If the current node is a leaf node (no children)
+        if (root.left == null && root.right == null) {
+            // Return true if the value of the leaf node is non-zero, else false
+            return root.val != 0; // Convert int to boolean
+        }
+        
+        // If the value of the current node is 2 (logical OR operation)
+        if (root.val == 2) {
+            // Recursively evaluate the left and right subtrees using logical OR (|)
+            return evaluateTree(root.left) | evaluateTree(root.right);
+        }
+        
+        // If the value of the current node is not 2 (logical AND operation)
+        // Note: This assumes that the value is either 0 or 1, as no other values are considered
+        // For other values, additional conditions/logic would be needed
+        // Recursively evaluate the left and right subtrees using logical AND (&)
+        return evaluateTree(root.left) & evaluateTree(root.right);
+    }
+}
+
+
