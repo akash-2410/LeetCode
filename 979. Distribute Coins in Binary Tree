@@ -1,0 +1,78 @@
+--------------------------------------------------------------------------------------------Question----------------------------------------------------------------------------------------------
+You are given the root of a binary tree with n nodes where each node in the tree has node.val coins. There are n coins in total throughout the whole tree.
+
+In one move, we may choose two adjacent nodes and move one coin from one node to another. A move may be from parent to child, or from child to parent.
+
+Return the minimum number of moves required to make every node have exactly one coin.
+--------------------------------------------------------------------------------------------Example----------------------------------------------------------------------------------------------
+Example 1:
+Input: root = [3,0,0]
+Output: 2
+Explanation: From the root of the tree, we move one coin to its left child, and one coin to its right child.
+
+Example 2:
+Input: root = [0,3,0]
+Output: 3
+Explanation: From the left child of the root, we move two coins to the root [taking two moves]. Then, we move one coin from the root of the tree to the right child.
+
+--------------------------------------------------------------------------------------------Intution----------------------------------------------------------------------------------------------
+Recursive Solution:
+
+We use a recursive approach to traverse the tree and solve the problem bottom-up (starting from the leaves and moving up to the root).
+For each node, we need to calculate the excess or deficit of coins. This information will be used to determine the moves required to balance coins between the node and its children.
+Balancing Coins:
+
+If a node has more than one coin, it needs to send the extra coins to its parent or children.
+If a node has less than one coin, it needs to receive the required coins from its parent or children.
+This distribution is recursively calculated.
+Moves Calculation:
+
+At each node, the number of moves required to balance its left and right subtrees is the sum of the absolute values of the excess coins from both subtrees.
+The excess coins at a node after processing its subtrees are given by: (left excess + right excess + current node's coins - 1).
+
+
+
+--------------------------------------------------------------------------------------------Code-------------------------------------------------------------------------------------------------
+class Solution {
+    // Method to calculate the minimum number of moves to distribute the coins
+    public int distributeCoins(TreeNode root) {
+        // Base case: if the tree is empty or consists of a single node, no moves are required
+        if (root == null || (root.left == null && root.right == null)) {
+            return 0;
+        }
+
+        // Array to keep track of the total number of moves
+        int[] moves = {0}; 
+        // Helper method to calculate the moves and balance the coins
+        solve(root, moves); 
+
+        // Return the total number of moves required
+        return moves[0];
+    }
+
+    // Helper method to recursively balance the coins and calculate moves
+    private static int solve(TreeNode root, int[] moves) {
+        // If the current node is null, return 0 (no extra coins)
+        if (root == null) {
+            return 0;
+        }
+
+        // Recursively solve for the left subtree
+        int l = solve(root.left, moves); 
+        // Recursively solve for the right subtree
+        int r = solve(root.right, moves);
+
+        // Calculate the total extra coins at the current node
+        // The formula is: total coins in the subtree rooted at current node - 1
+        // (as each node needs exactly 1 coin)
+        int totalExtraCoins = (l + r + root.val) - 1; 
+
+        // Update the number of moves by adding the absolute values of coins moved
+        moves[0] += Math.abs(l) + Math.abs(r); 
+        
+        // Return the total extra coins from the current subtree to its parent
+        return totalExtraCoins;
+    }
+}
+
+
