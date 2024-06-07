@@ -1,0 +1,126 @@
+------------------------------------------------------------------------------------------------Question-----------------------------------------------------------------------------------------
+In English, we have a concept called root, which can be followed by some other word to form another longer word - let's call this word derivative. 
+For example, when the root "help" is followed by the word "ful", we can form a derivative "helpful".
+
+Given a dictionary consisting of many roots and a sentence consisting of words separated by spaces, replace all the derivatives in the sentence with the root forming it.
+If a derivative can be replaced by more than one root, replace it with the root that has the shortest length.
+
+Return the sentence after the replacement.
+------------------------------------------------------------------------------------------------Example-----------------------------------------------------------------------------------------
+Example 1:
+
+Input: dictionary = ["cat","bat","rat"], sentence = "the cattle was rattled by the battery"
+Output: "the cat was rat by the bat"
+Example 2:
+
+Input: dictionary = ["a","b","c"], sentence = "aadsfasf absbs bbab cadsfafs"
+Output: "a a b c"
+------------------------------------------------------------------------------------------------Intution-----------------------------------------------------------------------------------------
+1. Initialization
+Create a Trie class to represent the Trie nodes.
+Create a Solution class that will use this Trie.
+2. Inserting Words into the Trie
+For each word in the dictionary, insert it into the Trie.
+While inserting, if a character node does not exist in the Trie, create it.
+Mark the end of the word in the Trie with an isEnd flag.
+3. Replacing Words in the Sentence
+Split the sentence into individual words.
+For each word in the sentence, search for the shortest prefix in the Trie:
+Traverse through the characters of the word.
+If a character is not found in the Trie, return the original word.
+If a complete prefix (marked by isEnd) is found, return this prefix.
+If traversal completes without finding any prefix, return the original word.
+Append each result to a StringBuilder to form the final sentence.
+Trim any extra spaces at the end of the result.
+
+
+
+
+------------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------
+class Solution {
+    // Root of the Trie data structure
+    Trie root;
+
+    // Main function to replace words in the sentence using the dictionary
+    public String replaceWords(List<String> dictionary, String sentence) {
+        root = new Trie(); // Initialize the root of the Trie
+
+        // Insert all words from the dictionary into the Trie
+        for(String word : dictionary){
+            insert(word);
+        }
+
+        StringBuilder result = new StringBuilder(); // To store the final result
+        String [] input = sentence.split(" "); // Split the sentence into individual words
+
+        // Replace each word in the input sentence
+        for(String i : input){
+            result.append(search(i)); // Search for the word's prefix in the Trie
+            result.append(" "); // Add a space after each replaced word
+        }
+
+        return result.toString().trim(); // Convert the result to a string and trim any extra spaces
+    }
+
+    // Function to search for the shortest prefix of a word in the Trie
+    public String search(String word){
+        Trie node = root;
+        int j = 0; // To track the length of the prefix
+
+        // Iterate through each character in the word
+        for(char c : word.toCharArray()){
+            int i = c - 'a'; // Get the index of the character
+            j++;
+
+            // If the character is not in the Trie, return the original word
+            if(node.children[i] == null){
+                return word;
+            }
+            // If we reach the end of a word in the Trie, return the prefix
+            else if(node.children[i].isEnd){
+                return word.substring(0, j);
+            }
+            // Move to the next node in the Trie
+            else{
+                node = node.children[i];
+            }
+        }
+
+        // Return the original word if no prefix is found
+        return word;
+    }
+
+    // Function to insert a word into the Trie
+    public void insert(String word){
+        Trie node = root;
+
+        // Iterate through each character in the word
+        for(char c: word.toCharArray()){
+            int i = c - 'a'; // Get the index of the character
+
+            // If the character is not already in the Trie, add it
+            if(node.children[i] == null){
+                node.children[i] = new Trie();
+            }
+
+            // Move to the next node in the Trie
+            node = node.children[i];
+        }
+
+        // Mark the end of the word
+        node.isEnd = true;
+    }
+}
+
+// Trie data structure class
+class Trie {
+    Trie [] children; // Array of children nodes
+    boolean isEnd; // Flag to mark the end of a word
+
+    // Constructor to initialize the Trie node
+    public Trie(){
+        children = new Trie[26]; // Initialize the children array with 26 slots (for each letter of the alphabet)
+        isEnd = false; // Initially, no word ends at this node
+    }
+}
+
