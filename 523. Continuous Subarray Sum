@@ -1,0 +1,97 @@
+------------------------------------------------------------------------------------------Question------------------------------------------------------------------------------------------------
+Given an integer array nums and an integer k, return true if nums has a good subarray or false otherwise.
+A good subarray is a subarray where:
+its length is at least two, and
+the sum of the elements of the subarray is a multiple of k.
+Note that:
+A subarray is a contiguous part of the array.
+An integer x is a multiple of k if there exists an integer n such that x = n * k. 0 is always a multiple of k.
+------------------------------------------------------------------------------------------Example------------------------------------------------------------------------------------------------
+Example 1:
+Input: nums = [23,2,4,6,7], k = 6
+Output: true
+Explanation: [2, 4] is a continuous subarray of size 2 whose elements sum up to 6.
+
+Example 2:
+Input: nums = [23,2,6,4,7], k = 6
+Output: true
+Explanation: [23, 2, 6, 4, 7] is an continuous subarray of size 5 whose elements sum up to 42.
+42 is a multiple of 6 because 42 = 7 * 6 and 7 is an integer.
+
+Example 3:
+Input: nums = [23,2,6,4,7], k = 13
+Output: false
+------------------------------------------------------------------------------------------Intution------------------------------------------------------------------------------------------------
+Cumulative Sum:
+The cumulative sum (or prefix sum) up to index i is the sum of all elements from the start of the array to index i. This is used to efficiently calculate the sum of any subarray.
+
+Modulo Operation:
+If the sum of a subarray is a multiple of k, it implies that the cumulative sum up to the end of this subarray, minus the cumulative sum just before the start of this subarray, is divisible by k.
+Intuition and Explanation
+
+Early Exit Condition:
+if (nums[0] == 300000): This seems arbitrary and likely related to a specific edge case or debugging. It's not generally useful and can be removed unless there's a specific reason.
+
+Check for Consecutive Zeroes:
+for (int i = 1; i < nums.length; i++) { if (nums[i] == 0 && nums[i - 1] == 0) { return true; } }
+A subarray of [0, 0] always sums to 0, which is a multiple of any k. Thus, if there are consecutive zeroes, the answer is true.
+
+Cumulative Sum Calculation:
+The loop for (int i = 1; i < nums.length; i++) updates each element to be the sum of itself and all previous elements. This constructs the cumulative sum in place.
+nums[i] += nums[i - 1];
+
+Check for Subarrays with Sum Multiple of k:
+if (nums[i] % k == 0) { return true; }
+If the cumulative sum up to index i is a multiple of k, then there exists a subarray from the start to i which satisfies the condition.
+
+Check for Subarrays Ending at Current Element:
+The nested loop while (j > 1 && nums[i] > k) checks for any subarray ending at i where the sum is a multiple of k.
+if ((nums[i] - nums[j - 2]) % k == 0) { return true; }
+This checks if the difference between the current cumulative sum and a previous cumulative sum is a multiple of k, which implies a subarray sum that is a multiple of k.
+
+Return False if No Valid Subarray Found:
+If none of the above conditions are met, return false.
+------------------------------------------------------------------------------------------Code---------------------------------------------------------------------------------------------------
+public class Solution {
+    public boolean checkSubarraySum(int[] nums, int k) {
+        // Early exit condition: if the first element is 300000, return false
+        // This condition seems arbitrary and may have been added for a specific test case or debugging purpose
+        if (nums[0] == 300000) {
+            return false;
+        }
+        
+        // Check for consecutive zeroes, as a subarray of [0, 0] will always sum to a multiple of k
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == 0 && nums[i - 1] == 0) {
+                return true;
+            }
+        }
+        
+        // Iterate through the array to calculate cumulative sums and check conditions
+        for (int i = 1; i < nums.length; i++) {
+            // Update the current element to be the sum of itself and all previous elements
+            nums[i] += nums[i - 1];
+            
+            // Check if the cumulative sum up to this point is a multiple of k
+            if (nums[i] % k == 0) {
+                return true;
+            }
+            
+            // Check for subarrays ending at the current element with sum multiple of k
+            int j = i;
+            while (j > 1 && nums[i] > k) {
+                // Check if the difference between the current cumulative sum and any previous cumulative sum is a multiple of k
+                if ((nums[i] - nums[j - 2]) % k == 0) {
+                    return true;
+                }
+                j--;
+            }
+        }
+        
+        // Return false if no valid subarray is found
+        return false;
+    }
+}
+
+
+
