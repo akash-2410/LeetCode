@@ -1,0 +1,77 @@
+---------------------------------------------------------------------------------------Question---------------------------------------------------------------------------------------------------
+Given an integer array nums and an integer k, return the number of non-empty subarrays that have a sum divisible by k.
+A subarray is a contiguous part of an array.
+---------------------------------------------------------------------------------------Example---------------------------------------------------------------------------------------------------
+Example 1:
+Input: nums = [4,5,0,-2,-3,1], k = 5
+Output: 7
+Explanation: There are 7 subarrays with a sum divisible by k = 5:
+[4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
+
+Example 2:
+Input: nums = [5], k = 9
+Output: 0
+---------------------------------------------------------------------------------------Intution---------------------------------------------------------------------------------------------------
+Initialization:
+
+count: To keep track of the total number of subarrays whose sums are divisible by 
+𝑘
+k.
+sum: To maintain the cumulative sum as we iterate through the array.
+rem: To store the remainder of the cumulative sum divided by 
+𝑘
+k.
+md: An array of size 
+𝑘
+k to store the frequency of each remainder.
+First Loop: Calculate Cumulative Sums and Remainders:
+
+As we iterate through the array, we continuously add the current element to sum.
+Compute the remainder rem of sum % k.
+If rem is negative (which can happen in languages like Java where the remainder can be negative if the dividend is negative), we adjust it by adding 
+𝑘
+k to ensure it's positive.
+Increment the count of this remainder in the md array.
+Second Loop: Calculate the Number of Subarrays:
+
+Iterate through the md array to count how many times each remainder has been seen.
+If a remainder has been seen more than once, it means that there are multiple cumulative sums that, when subtracted from each other, result in a sum that is divisible by 
+𝑘
+k.
+The combinatorial count (md[i] * (md[i] - 1)) / 2 calculates how many pairs of these cumulative sums can be chosen, each pair representing a valid subarray.
+Special Case for Remainder Zero:
+
+Add the count of md[0] directly to the result since md[0] represents the number of subarrays starting from the beginning that have sums divisible by 
+𝑘
+k.
+
+
+
+
+---------------------------------------------------------------------------------------Code------------------------------------------------------------------------------------------------------
+public class Solution {
+    public int subarraysDivByK(int[] nums, int k) {
+        int count = 0, sum = 0, rem; // Initialize variables for count, cumulative sum, and remainder
+        int md[] = new int[k]; // Initialize an array to store the frequency of remainders
+        
+        // Loop to calculate cumulative sums and their remainders
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i]; // Add the current element to the cumulative sum
+            rem = sum % k; // Calculate the remainder of the cumulative sum divided by k
+            if (rem < 0) // If the remainder is negative
+                rem += k; // Adjust it by adding k to get a positive equivalent
+            md[rem]++; // Increment the count of this remainder in the array
+        }
+        
+        // Loop to calculate the number of subarrays with sums divisible by k
+        for (int i = 0; i < k; i++) {
+            if (md[i] > 1) // If the remainder has been seen more than once
+                count += (md[i] * (md[i] - 1)) / 2; // Add the number of ways to choose 2 out of md[i] (combinatorial count)
+        }
+        
+        count += md[0]; // Add the count of subarrays that start from the beginning and are divisible by k
+        return count; // Return the total count of subarrays divisible by k
+    }
+}
+
+
