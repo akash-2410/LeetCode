@@ -1,0 +1,63 @@
+------------------------------------------------------------------------------------------Question------------------------------------------------------------------------------------------------
+Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue.
+
+We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.
+
+You must solve this problem without using the library's sort function.
+------------------------------------------------------------------------------------------Example------------------------------------------------------------------------------------------------
+Example 1:
+Input: nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+
+Example 2:
+Input: nums = [2,0,1]
+Output: [0,1,2]
+------------------------------------------------------------------------------------------Intution------------------------------------------------------------------------------------------------ 
+Count Occurrences:
+The first step is to count the number of occurrences of each value (0, 1, and 2).
+This is done by iterating through the array once and incrementing the respective counters (zeroCnt, oneCnt, and twoCnt).
+
+Reconstruct the Array:
+After counting the occurrences, we know exactly how many 0s, 1s, and 2s should be in the array.
+The array is then reconstructed by placing the correct number of 0s first, followed by 1s, and then 2s.
+This is done by another pass through the array, filling in the values based on the counts.
+------------------------------------------------------------------------------------------Code--------------------------------------------------------------------------------------------------- 
+public class Solution {
+    public void sortColors(int[] nums) {
+        int zeroCnt = 0, oneCnt = 0, twoCnt = 0;
+
+        // Count occurrences of 0s, 1s, and 2s
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == 0) {
+                zeroCnt++; // Increment count of 0s
+            } else if (nums[i] == 1) {
+                oneCnt++; // Increment count of 1s
+            } else {
+                twoCnt++; // Increment count of 2s
+            }
+        }
+
+        int arrayIterator = 0; // Iterator to traverse and modify the array
+
+        // Place all 0s in the beginning of the array
+        for (int i = 0; i < zeroCnt; i++) {
+            nums[arrayIterator] = 0; // Set current position to 0
+            arrayIterator++; // Move to the next position
+        }
+
+        // Place all 1s in the array after the 0s
+        for (int i = 0; i < oneCnt; i++) {
+            nums[arrayIterator] = 1; // Set current position to 1
+            arrayIterator++; // Move to the next position
+        }
+
+        // Place all 2s in the array after the 1s
+        for (int i = 0; i < twoCnt; i++) {
+            nums[arrayIterator] = 2; // Set current position to 2
+            arrayIterator++; // Move to the next position
+        }
+    }
+}
+
+
+
